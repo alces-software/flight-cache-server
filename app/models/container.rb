@@ -1,4 +1,6 @@
 class Container < ApplicationRecord
+  belongs_to :tool_tag
+
   validates :bucket, presence: true, allow_blank: false
 
   def bucket
