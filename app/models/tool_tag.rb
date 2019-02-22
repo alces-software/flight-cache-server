@@ -1,0 +1,2 @@
+class ToolTag < ApplicationRecord
+end

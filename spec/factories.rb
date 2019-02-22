@@ -1,7 +1,10 @@
 
 FactoryBot.define do
   factory :container do
-    name 'something'
     bucket 'test-bucket'
+  end
+
+  factory :tool_tag do
+    name "test-cloud-application"
   end
 end
