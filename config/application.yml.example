@@ -1,0 +1,11 @@
+# Copy this file into place leaving the original as a reference:
+# cp config/application.yml.example config/application.yml
+#
+
+#
+# Uncomment and fill out the details below:
+#
+# default_bucket: flight-cache-dev
+#
+# production:
+#   default_bucket: flight-cache

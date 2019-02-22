@@ -22,3 +22,13 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+# Configuration
+
+This app uses figaro to configure certain components. See the example config for
+details:
+
+```
+cat config/application.yml.example
+```
+
