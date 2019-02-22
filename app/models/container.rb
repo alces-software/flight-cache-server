@@ -1,5 +1,5 @@
 class Container < ApplicationRecord
-  validates :name, presence: true
+  validates :name, :bucket, presence: true, allow_blank: false
 
   def bucket
     if bucket = super
