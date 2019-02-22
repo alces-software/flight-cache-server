@@ -6,6 +6,9 @@
 # Uncomment and fill out the details below:
 #
 # default_bucket: flight-cache-dev
+# default_region: eu-west-1
+# aws_access_key:
+# aws_secret_access_key:
 #
 # production:
 #   default_bucket: flight-cache

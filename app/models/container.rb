@@ -6,16 +6,14 @@ class Container < ApplicationRecord
   validates :bucket, presence: true, allow_blank: false
 
   def bucket
-    if bucket = super
-      bucket
-    else
-      Figaro.env.default_bucket
-    end
+    (b = super) ? b : Figaro.env.default_bucket
   end
 
-  def client
-    @client ||= begin
-      Aws::S3::Client.new
-    end
+  def region
+    Figaro.env.default_region
+  end
+
+  def aws_client
+    @aws_client ||= Aws::S3::Client.new(region: region)
   end
 end
