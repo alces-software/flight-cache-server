@@ -1,3 +1,5 @@
+require 'aws-sdk-s3'
+
 class Container < ApplicationRecord
   belongs_to :tool_tag
 
@@ -8,6 +10,12 @@ class Container < ApplicationRecord
       bucket
     else
       Figaro.env.default_bucket
+    end
+  end
+
+  def client
+    @client ||= begin
+      Aws::S3::Client.new
     end
   end
 end

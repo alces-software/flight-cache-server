@@ -33,7 +33,7 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-# Add a rails admin interface
+gem 'aws-sdk-s3', '~> 1'
 gem 'rails_admin', '~> 1.3'
 
 # Manages config files
