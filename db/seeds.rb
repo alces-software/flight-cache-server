@@ -6,4 +6,6 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Container.create!(name: 'test')
+# Selectively load other db seeds based on the environment
+env_seeds = Rails.root.join( 'db', 'seeds', "#{Rails.env.downcase}.rb")
+load(env_seeds) if File.exists?(env_seeds)
