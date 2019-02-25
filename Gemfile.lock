@@ -257,7 +257,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  aws-sdk-s3 (~> 1)
+  aws-sdk-s3
   byebug
   coffee-rails (~> 4.2)
   factory_bot_rails
