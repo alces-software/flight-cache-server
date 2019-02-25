@@ -13,7 +13,11 @@ class Container < ApplicationRecord
     Figaro.env.default_region
   end
 
-  def aws_client
-    @aws_client ||= Aws::S3::Client.new(region: region)
+  def s3_client
+    @s3_client ||= Aws::S3::Client.new(region: region)
+  end
+
+  def join(*parts)
+    File.join(tool_tag.name, *a)
   end
 end
