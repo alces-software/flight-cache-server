@@ -1,5 +1,9 @@
 
 FactoryBot.define do
+  factory :blob do
+    
+  end
+
   factory :container do
     bucket { 'test-bucket' }
     tool_tag

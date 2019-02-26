@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_26_221117) do
+ActiveRecord::Schema.define(version: 2019_02_26_222450) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,13 @@ ActiveRecord::Schema.define(version: 2019_02_26_221117) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+  create_table "blobs", primary_key: "active_storage_blob_id", id: :serial, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "container_id", null: false
+    t.index ["container_id"], name: "index_blobs_on_container_id"
+  end
+
   create_table "containers", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -39,5 +46,7 @@ ActiveRecord::Schema.define(version: 2019_02_26_221117) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "blobs", "active_storage_blobs"
+  add_foreign_key "blobs", "containers"
   add_foreign_key "containers", "tool_tags"
 end
