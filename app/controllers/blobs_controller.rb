@@ -1,20 +1,9 @@
-
 require 'active_storage/blob'
 
-class ContainerBlobsController < ApplicationController
-  def index
-    render jsonapi: container.packages_blobs
-  end
-
-  def show
-    render jsonapi: blob_param
-  end
-
+class BlobsController < ApplicationController
   def download
     redirect_to blob_param.service_url
   end
-
-  private
 
   def container
     Container.find(params.require(:container_id))

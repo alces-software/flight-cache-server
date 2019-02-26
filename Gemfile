@@ -36,7 +36,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'aws-sdk-s3', require: false
 gem 'rails_admin', '>= 1.4'
 
-gem 'jsonapi-rails'
+gem 'jsonapi-resources'
 
 # Manages config files
 gem 'figaro'
