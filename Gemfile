@@ -34,7 +34,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem 'aws-sdk-s3', require: false
-gem 'rails_admin', '~> 1.3'
+gem 'rails_admin', '>= 1.4'
 
 # Manages config files
 gem 'figaro'
