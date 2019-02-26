@@ -3,6 +3,11 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   resources :containers, only: :show do
-    resources :blobs, only: [:index, :show], controller: 'container_blobs', path: 'blobs'
+    resources :blobs,
+              only: [:index, :show],
+              controller: 'container_blobs',
+              path: 'blobs' do
+      get 'download', on: :member
+    end
   end
 end

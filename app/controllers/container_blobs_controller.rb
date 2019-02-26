@@ -10,6 +10,10 @@ class ContainerBlobsController < ApplicationController
     render jsonapi: blob_param
   end
 
+  def download
+    redirect_to blob_param.service_url
+  end
+
   private
 
   def container

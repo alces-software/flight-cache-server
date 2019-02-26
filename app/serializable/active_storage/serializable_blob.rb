@@ -6,5 +6,4 @@ class ActiveStorage::SerializableBlob < JSONAPI::Serializable::Resource
   attribute :byte_size
   attribute :checksum
   attribute :created_at
-  attribute :url { @object.service_url }
 end
