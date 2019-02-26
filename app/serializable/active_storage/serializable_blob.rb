@@ -3,7 +3,7 @@ class ActiveStorage::SerializableBlob < JSONAPI::Serializable::Resource
   attribute :filename
   attribute :content_type
   attribute :metadata
-  attribute :byte_size
+  attribute :size { @object.byte_size }
   attribute :checksum
   attribute :created_at
 end
