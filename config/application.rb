@@ -22,6 +22,13 @@ module FlightCache
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
+    # Remove the insecure ActiveStorage routes that are automatically added
+    # Instead these routes will be manually defined
+    # https://stackoverflow.com/questions/52497044/how-to-disable-auto-generated-routes-by-active-storage
+    initializer(:remove_activestorage_routes, after: :add_routing_paths) do |app|
+      app.routes_reloader.paths.delete_if {|path| path =~ /activestorage/}
+    end
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
