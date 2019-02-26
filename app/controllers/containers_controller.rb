@@ -1,5 +1,11 @@
 class ContainersController < ApplicationController
-  def index
-    render jsonapi: Container.all
+  def show
+    render jsonapi: Container.find(id_param)
+  end
+
+  private
+
+  def id_param
+    params.require(:id)
   end
 end
