@@ -1,7 +1,7 @@
 class BlobResource < JSONAPI::Resource
-  model_name 'ActiveStorage::Blob'
   immutable
 
+  has_one :container
   attribute :size, delegate: :byte_size
 
   attribute :filename

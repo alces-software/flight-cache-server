@@ -3,11 +3,11 @@ class ContainerResource < JSONAPI::Resource
   # be mutable through the API
   immutable
 
+  has_many :blobs
+
   # Expose the ToolTag as the containers 'type'
   attribute :tool_type
   def tool_type
     @model.tool_tag.name
   end
-
-  has_many :blobs, relation_name: :packages_blobs
 end
