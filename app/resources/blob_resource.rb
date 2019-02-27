@@ -1,6 +1,4 @@
 class BlobResource < JSONAPI::Resource
-  immutable
-
   has_one :container
   attribute :size, delegate: :byte_size
 
@@ -14,5 +12,8 @@ class BlobResource < JSONAPI::Resource
     {
       download: File.join(opts[:serializer].link_builder.self_link(self), 'download')
     }
+  end
+
+  def create
   end
 end

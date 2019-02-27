@@ -1,7 +1,6 @@
 class ContainerResource < JSONAPI::Resource
   # The containers are configured through the 'rails/admin' and should not
   # be mutable through the API
-  immutable
 
   has_many :blobs
 
