@@ -9,8 +9,10 @@ Rails.application.routes.draw do
   end
 
   jsonapi_resources :containers, only: :show do
-    jsonapi_links :blobs, only: :show
-    jsonapi_related_resources :blobs
-    # jsonapi_resources :blobs, only: :create, reflect: true
+    jsonapi_link :blobs, only: :show
+    jsonapi_related_resources :blobs, only: :show
+    resource :blobs, on: :member, only: [] do
+      post "upload/:filename", on: :member, action: :upload
+    end
   end
 end

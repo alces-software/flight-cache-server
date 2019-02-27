@@ -1,11 +1,29 @@
 require 'active_storage/blob'
 
 class BlobsController < ApplicationController
-  def download
-    redirect_to blob_param.service_url
+  def upload
+    filename_param
+    container_param
+    active_storage_blob = ActiveStorage::Blob.create_after_upload!(
+      io: request.body, filename: filename_param
+    )
+    blob = Blob.create!(
+      active_storage_blob: active_storage_blob, container: container_param
+    )
+    render json: blob.byte_size
   end
 
-  def blob_param
-    ActiveStorage::Blob.find(params.require(:id))
+  def download
+    redirect_to ActiveStorage::Blob.find(params.require(:id)).service_url
+  end
+
+  private
+
+  def filename_param
+    params.require(:filename)
+  end
+
+  def container_param
+    Container.find(params.require(:container_id))
   end
 end
