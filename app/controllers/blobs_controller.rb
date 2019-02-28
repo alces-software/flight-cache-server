@@ -1,6 +1,15 @@
 require 'active_storage/blob'
 
 class BlobsController < ApplicationController
+  def index
+    serial = BlobSerializer.new(container_param.blobs, is_collection: true)
+    render json: serial.serialized_json
+  end
+
+  def show
+    render json: BlobSerializer.new(blob_param).serialized_json
+  end
+
   def upload
     filename_param
     container_param
@@ -18,6 +27,10 @@ class BlobsController < ApplicationController
   end
 
   private
+
+  def blob_param
+    Blob.find(params.require(:id))
+  end
 
   def filename_param
     base = params.require(:filename)
