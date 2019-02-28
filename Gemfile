@@ -34,6 +34,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem 'aws-sdk-s3', require: false
+gem 'cancancan'
 gem 'rails_admin', '>= 1.4'
 
 gem 'jsonapi-resources'
