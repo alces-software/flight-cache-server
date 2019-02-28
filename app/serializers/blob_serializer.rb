@@ -1,10 +1,9 @@
-class BlobSerializer
-  include FastJsonapi::ObjectSerializer
+class BlobSerializer < ApplicationSerializer
   attributes :checksum
   attribute :size, &:byte_size
-  attribute :filename do |obj|
-    obj.filename.to_s
-  end
+  attribute :filename { |o| o.filename.to_s }
 
   belongs_to :container
+
+  link :self { |b| urls.blob_url(b) }
 end

@@ -52,6 +52,8 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
+  # Develop on local host
+  Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 
   # Store files on Amazon S3.
   config.active_storage.service = :amazon
