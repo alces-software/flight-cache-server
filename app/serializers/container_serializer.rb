@@ -1,7 +1,10 @@
 class ContainerSerializer < ApplicationSerializer
   include FastJsonapi::ObjectSerializer
-  has_many :blobs
   belongs_to :tool_tag
 
-  link :self { |c| urls.container_url(c) }
+  link :self { |c| urls.url_for(c) }
+
+  has_many :blobs, links: {
+    related: proc { |c| urls.container_blobs_url(c) }
+  }
 end
