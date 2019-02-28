@@ -5,7 +5,11 @@ class ContainersController < ApplicationController
 
   private
 
+  def blob_param
+    Blob.find(params.require(:blob_id))
+  end
+
   def container_param
-    Container.find(params.require(:id))
+    (id = params[:id]) ? Container.find(id) : blob_param.container
   end
 end
