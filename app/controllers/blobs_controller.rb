@@ -1,6 +1,8 @@
 require 'active_storage/blob'
 
 class BlobsController < ApplicationController
+  load_and_authorize_resource
+
   def index
     serial = BlobSerializer.new(container_param.blobs, is_collection: true)
     render json: serial
