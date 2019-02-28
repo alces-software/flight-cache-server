@@ -8,4 +8,5 @@ class BlobSerializer < ApplicationSerializer
   }
 
   link :self { |b| urls.blob_url(b) }
+  link :download { |b| urls.download_blob_url(b) }
 end
