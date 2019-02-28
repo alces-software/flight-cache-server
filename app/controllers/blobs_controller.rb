@@ -20,7 +20,8 @@ class BlobsController < ApplicationController
   private
 
   def filename_param
-    params.require(:filename)
+    base = params.require(:filename)
+    (ext = params[:format]) ? "#{base}.#{ext}" : base
   end
 
   def container_param
