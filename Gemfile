@@ -37,8 +37,6 @@ gem 'aws-sdk-s3', require: false
 gem 'cancancan'
 gem 'rails_admin', '>= 1.4'
 
-gem 'jsonapi-resources'
-
 # Manages config files
 gem 'figaro'
 
