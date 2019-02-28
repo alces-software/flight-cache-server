@@ -3,11 +3,11 @@ require 'active_storage/blob'
 class BlobsController < ApplicationController
   def index
     serial = BlobSerializer.new(container_param.blobs, is_collection: true)
-    render json: serial.serialized_json
+    render json: serial
   end
 
   def show
-    render json: BlobSerializer.new(blob_param).serialized_json
+    render json: BlobSerializer.new(blob_param)
   end
 
   def upload

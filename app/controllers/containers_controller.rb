@@ -1,6 +1,6 @@
 class ContainersController < ApplicationController
   def show
-    render json: ContainerSerializer.new(container_param).serialized_json
+    render json: ContainerSerializer.new(container_param)
   end
 
   private
