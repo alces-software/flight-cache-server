@@ -19,7 +19,7 @@ class BlobsController < ApplicationController
     blob = Blob.create!(
       active_storage_blob: active_storage_blob, container: container_param
     )
-    render json: blob.byte_size
+    render json: BlobSerializer.new(blob)
   end
 
   def download

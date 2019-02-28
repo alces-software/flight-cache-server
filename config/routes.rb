@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   resources :blobs, only: :show
 
   resources :containers, only: :show do
-    resources :blobs, only: :index
+    resources :blobs, only: :index do
+      post 'upload/:filename', on: :collection, action: :upload
+    end
   end
 end
