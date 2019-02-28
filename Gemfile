@@ -35,6 +35,7 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'aws-sdk-s3', require: false
 gem 'cancancan'
+gem 'jwt'
 gem 'rails_admin', '>= 1.4'
 gem 'fast_jsonapi'
 

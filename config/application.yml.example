@@ -4,11 +4,13 @@
 
 #
 # Uncomment and fill out the details below:
-#
-# default_bucket: flight-cache-dev
 # default_region: eu-west-1
 # aws_access_key:
 # aws_secret_access_key:
+#
+# development
+#   json_web_token_secret: anmwvFWm6M62BkK427OxoY7j18KKAgJO7S9hJRvG
+#   default_bucket: flight-cache-dev
 #
 # production:
 #   default_bucket: flight-cache
