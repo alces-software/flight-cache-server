@@ -3,3 +3,6 @@ tag = ToolTag.create!(name: 'test-tag')
 
 # Create a test container
 Container.create!(tool_tag: tag)
+
+# Creates the admin user
+User.create!(email: "admin@example.com")

@@ -1,5 +1,9 @@
 
 FactoryBot.define do
+  factory :user do
+    email { "MyString" }
+  end
+
   factory :blob do
     
   end
