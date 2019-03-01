@@ -33,8 +33,7 @@ class Ability
     if user&.global_admin?
       can :manage, :all
     elsif user
-      can :read, :all
-      can :download, Blob
+      can :read, Container, id: user.containers.map(&:id)
     end
   end
 end

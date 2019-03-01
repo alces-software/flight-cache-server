@@ -20,7 +20,18 @@ RSpec.describe Ability, type: :ability do
     let(:user) { create(:user) }
 
     it { is_expected.not_to be_can(:access, :rails_admin) }
-    it { is_expected.to be_can(:read, :all) }
-    it { is_expected.to be_can(:download, Blob) }
+
+    context 'when it shares a group with the container' do
+      let!(:container) { create(:container, group: user.group) }
+
+      it { is_expected.to be_can(:read, container) }
+    end
+
+    context 'when it does not share a group' do
+      let(:other_group) { create(:group, name: "not-#{user.group.name}") }
+      let(:container) { create(:container, group: other_group) }
+
+      it { is_expected.not_to be_can(:read, container) }
+    end
   end
 end
