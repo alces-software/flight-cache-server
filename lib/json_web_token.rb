@@ -12,6 +12,34 @@
 require 'jwt'
 
 class JsonWebToken
+  Token = Struct.new(:token) do
+    def initialize(*a)
+      super
+      data
+    end
+
+    def error?
+      @error
+    end
+
+    def email
+      data[:email]
+    end
+
+    def user
+      User.find_by_email(email)
+    end
+
+    private
+
+    def data
+      @data ||= JsonWebToken.decode(token).deep_symbolize_keys
+    rescue
+      @error ||= true
+      @data ||= {}
+    end
+  end
+
   def self.enabled?
     Figaro.env.json_web_token_secret.present?
   end

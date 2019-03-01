@@ -1,4 +1,11 @@
+require 'json_web_token'
+
 RailsAdmin.config do |config|
+  # == Current User ==
+  # Extract the current user from the webtoken
+  config.current_user_method do
+    JsonWebToken::Token.new(params.require(:flight_sso_token)).user
+  end
 
   ### Popular gems integration
 
@@ -8,8 +15,8 @@ RailsAdmin.config do |config|
   # end
   # config.current_user_method(&:current_user)
 
-  ## == Cancan ==
-  # config.authorize_with :cancan
+  ## == Cancancan ==
+  config.authorize_with :cancancan
 
   ## == Pundit ==
   # config.authorize_with :pundit
