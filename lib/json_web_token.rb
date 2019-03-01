@@ -40,6 +40,14 @@ class JsonWebToken
     end
   end
 
+  Builder = Struct.new(:user) do
+    def build
+      JsonWebToken.encode({
+        email: user.email
+      })
+    end
+  end
+
   def self.enabled?
     Figaro.env.json_web_token_secret.present?
   end
