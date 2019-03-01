@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   def current_user
-    token_param.email.user
+    token_param.user
   end
 
   def token_param

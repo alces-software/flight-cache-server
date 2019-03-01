@@ -15,4 +15,12 @@ RSpec.describe Ability, type: :ability do
     it { is_expected.not_to be_can(:access, :rails_admin) }
     it { is_expected.not_to be_can(:manage, :all) }
   end
+
+  describe 'with a regular user' do
+    let(:user) { create(:user) }
+
+    it { is_expected.not_to be_can(:access, :rails_admin) }
+    it { is_expected.to be_can(:read, :all) }
+    it { is_expected.to be_can(:download, Blob) }
+  end
 end

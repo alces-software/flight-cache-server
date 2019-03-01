@@ -30,10 +30,11 @@ class Ability
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
     # Protect against the nil user
-    return unless user
-
-    if user.global_admin?
+    if user&.global_admin?
       can :manage, :all
+    elsif user
+      can :read, :all
+      can :download, Blob
     end
   end
 end
