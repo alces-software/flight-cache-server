@@ -4,7 +4,13 @@ RailsAdmin.config do |config|
   # == Current User ==
   # Extract the current user from the webtoken
   config.current_user_method do
-    JsonWebToken::Token.new(params.require(:flight_sso_token)).user
+    if (token = params[:flight_sso_token])
+      JsonWebToken::Token.new(token).user.tap do |user|
+        session[:rails_admin_user_id] = user&.id
+      end
+    elsif (id = session[:rails_admin_user_id])
+      User.find(id)
+    end
   end
 
   ### Popular gems integration
