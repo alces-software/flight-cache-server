@@ -2,6 +2,7 @@
 FactoryBot.define do
   factory :user do
     email { "user@example.com" }
+    global_admin { false }
   end
 
   factory :blob do

@@ -29,7 +29,7 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
-    if user
+    if user.global_admin?
       can :manage, Container
       can :manage, Blob
     end
