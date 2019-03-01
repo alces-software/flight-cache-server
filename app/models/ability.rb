@@ -29,9 +29,11 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
+    # Protect against the nil user
+    return unless user
+
     if user.global_admin?
-      can :manage, Container
-      can :manage, Blob
+      can :manage, :all
     end
   end
 end
