@@ -15,6 +15,11 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'factory_bot'
+require 'pp'
+require 'pry'
+require 'pry-byebug'
+require 'pry-rails'
+require "rails_helper"
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods

@@ -1,15 +1,13 @@
 
 FactoryBot.define do
   factory :user do
-    email { "MyString" }
+    email { "user@example.com" }
   end
 
   factory :blob do
-    
   end
 
   factory :container do
-    bucket { 'test-bucket' }
     tool_tag
   end
 
