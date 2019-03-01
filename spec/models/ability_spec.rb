@@ -5,21 +5,33 @@ RSpec.describe Ability, type: :ability do
     end
   end
 
+  shared_examples 'full blobs access' do
+    it { is_expected.to be_can(:manage, Blob) }
+  end
+
   subject { Ability.new(user) }
 
   describe 'with a global admin' do
+    include_context 'with container blobs'
+
+    let(:container) { create(:container) }
     let(:user) { create(:user, global_admin: true) }
 
     it { is_expected.to be_can(:manage, :all) }
     it { is_expected.to be_can(:access, :rails_admin) }
     it { is_expected.to be_can(:read, :dashboard) }
+    it { is_expected.to be_can(:download, container.blobs.first) }
   end
 
   describe 'without a user' do
+    include_context 'with container blobs'
+
+    let(:container) { create(:container) }
     let(:user) { nil }
 
     it { is_expected.not_to be_can(:access, :rails_admin) }
     it { is_expected.not_to be_can(:manage, :all) }
+    it { is_expected.not_to be_can(:download, container.blobs.first) }
   end
 
   describe 'with a regular user' do
@@ -34,6 +46,7 @@ RSpec.describe Ability, type: :ability do
 
       it { is_expected.to be_can(:read, container) }
       it { is_expected.to be_can(:read, container.blobs.first) }
+      it { is_expected.to be_can(:download, container.blobs.first) }
     end
 
     context 'when it does not share a group' do
@@ -44,6 +57,7 @@ RSpec.describe Ability, type: :ability do
 
       it { is_expected.not_to be_can(:read, container) }
       it { is_expected.not_to be_can(:read, container.blobs.first) }
+      it { is_expected.not_to be_can(:download, container.blobs.first) }
     end
   end
 end

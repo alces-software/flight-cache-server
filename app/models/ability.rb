@@ -35,7 +35,7 @@ class Ability
     elsif user
       container_ids = user.containers.map(&:id)
       can :read, Container, id: container_ids
-      can :read, Blob, container_id: container_ids
+      can [:read,:download], Blob, container_id: container_ids
     end
   end
 end
