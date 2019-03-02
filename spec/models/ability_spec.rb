@@ -44,7 +44,7 @@ RSpec.describe Ability, type: :ability do
 
       let(:container) { create(:container, group: user.group) }
 
-      it { is_expected.to be_can(:read, container) }
+      it { is_expected.to be_can(:show, container) }
       it { is_expected.to be_can(:read, container.blobs.first) }
       it { is_expected.to be_can(:download, container.blobs.first) }
     end
@@ -55,8 +55,8 @@ RSpec.describe Ability, type: :ability do
       let(:other_group) { create(:group, name: "not-#{user.group.name}") }
       let(:container) { create(:container, group: other_group) }
 
-      it { is_expected.not_to be_can(:read, container) }
-      it { is_expected.not_to be_can(:read, container.blobs.first) }
+      it { is_expected.not_to be_can(:show, container) }
+      it { is_expected.not_to be_can(:show, container.blobs.first) }
       it { is_expected.not_to be_can(:download, container.blobs.first) }
     end
   end
