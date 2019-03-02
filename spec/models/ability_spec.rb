@@ -21,6 +21,7 @@ RSpec.describe Ability, type: :ability do
     it { is_expected.to be_can(:access, :rails_admin) }
     it { is_expected.to be_can(:read, :dashboard) }
     it { is_expected.to be_can(:download, container.blobs.first) }
+    it { is_expected.to be_can(:upload, Container) }
   end
 
   describe 'without a user' do
@@ -32,6 +33,7 @@ RSpec.describe Ability, type: :ability do
     it { is_expected.not_to be_can(:access, :rails_admin) }
     it { is_expected.not_to be_can(:manage, :all) }
     it { is_expected.not_to be_can(:download, container.blobs.first) }
+    it { is_expected.not_to be_can(:upload, container) }
   end
 
   describe 'with a regular user' do
@@ -47,6 +49,7 @@ RSpec.describe Ability, type: :ability do
       it { is_expected.to be_can(:show, container) }
       it { is_expected.to be_can(:read, container.blobs.first) }
       it { is_expected.to be_can(:download, container.blobs.first) }
+      it { is_expected.to be_can(:upload, container) }
     end
 
     context 'when it does not share a group' do
@@ -58,6 +61,7 @@ RSpec.describe Ability, type: :ability do
       it { is_expected.not_to be_can(:show, container) }
       it { is_expected.not_to be_can(:show, container.blobs.first) }
       it { is_expected.not_to be_can(:download, container.blobs.first) }
+      it { is_expected.not_to be_can(:upload, container) }
     end
   end
 end
