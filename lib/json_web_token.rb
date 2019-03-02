@@ -41,10 +41,10 @@ class JsonWebToken
   end
 
   Builder = Struct.new(:user) do
-    def build
+    def build(expire = 24.hours.from_now)
       JsonWebToken.encode({
         email: user.email
-      })
+      }, expire)
     end
   end
 
