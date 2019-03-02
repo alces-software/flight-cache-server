@@ -9,8 +9,8 @@ Rails.application.routes.draw do
   end
 
   resources :containers, only: :show do
-    resources :blobs, only: :index do
-      post 'upload/:filename', on: :collection, action: :upload
-    end
+    post 'upload/:filename', on: :member, action: :upload
+
+    resources :blobs, only: :index
   end
 end

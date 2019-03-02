@@ -14,25 +14,7 @@ class BlobsController < ApplicationController
     render json: BlobSerializer.new(@blob)
   end
 
-  def upload
-    filename_param
-    active_storage_blob = ActiveStorage::Blob.create_after_upload!(
-      io: request.body, filename: filename_param
-    )
-    blob = Blob.create!(
-      active_storage_blob: active_storage_blob, container: @container
-    )
-    render json: BlobSerializer.new(blob)
-  end
-
   def download
     redirect_to @blob.service_url
-  end
-
-  private
-
-  def filename_param
-    base = params.require(:filename)
-    (ext = params[:format]) ? "#{base}.#{ext}" : base
   end
 end
