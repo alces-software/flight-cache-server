@@ -23,11 +23,11 @@ FactoryBot.define do
   end
 
   factory :container do
-    tool_tag
+    access_tag
     group
   end
 
-  factory :tool_tag do
+  factory :access_tag do
     name { "test-cloud-application" }
   end
 end
