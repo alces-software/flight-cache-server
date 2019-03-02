@@ -47,7 +47,7 @@ RSpec.describe Ability, type: :ability do
       let(:container) { create(:container, group: user.group) }
 
       it { is_expected.to be_can(:show, container) }
-      it { is_expected.to be_can(:read, container.blobs.first) }
+      it { is_expected.to be_can(:show, container.blobs.first) }
       it { is_expected.to be_can(:download, container.blobs.first) }
       it { is_expected.to be_can(:upload, container) }
     end
