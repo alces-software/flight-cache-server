@@ -14,7 +14,6 @@ Rails.application.routes.draw do
     resources :blobs, only: :index
   end
 
-  match 'tag/:tag', via: :get, controller: :container, action: :index do
-    resource :container
+  match 'tag/:tag', via: :get, controller: :containers, action: :index do
   end
 end

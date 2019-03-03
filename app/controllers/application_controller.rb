@@ -10,6 +10,10 @@ class ApplicationController < ActionController::Base
     token_param.user
   end
 
+  def current_tag
+    AccessTag.find_by_name(params.require(:tag))
+  end
+
   def token_param
     JsonWebToken::Token.new(params[:flight_sso_token])
   end

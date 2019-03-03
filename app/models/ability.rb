@@ -36,6 +36,7 @@ class Ability
       can [:show, :upload], Container do |container|
         container.group == user.group
       end
+      can :index, Container
       can :index, Blob
       can [:show, :download], Blob do |blob|
         blob.container.group == user.group
