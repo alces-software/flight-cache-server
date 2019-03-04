@@ -6,6 +6,14 @@ class ApplicationController < ActionController::Base
   # http://jsonapi-resources.com/v0.9/guide/basic_usage.html#Application-Controller
   protect_from_forgery with: :null_session
 
+  def self.load_tag_containers(**opts)
+    before_action(**opts) do
+      @containers ||= begin
+        Container.where(access_tag: current_tag, group: current_user.groups)
+      end
+    end
+  end
+
   def current_user
     token_param.user
   end

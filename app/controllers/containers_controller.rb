@@ -6,11 +6,7 @@ class ContainersController < ApplicationController
 
   # INDEX: Action Only
   # Loads the containers based on the current user and tag
-  before_action(only: :index) do
-    @containers ||= begin
-      Container.where(access_tag: current_tag, group: current_user.groups)
-    end
-  end
+  load_tag_containers only: :index
 
   def index
     render json: ContainerSerializer.new(@containers)
