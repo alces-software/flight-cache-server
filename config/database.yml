@@ -80,6 +80,4 @@ test:
 #
 production:
   <<: *default
-  database: flight-cache_production
-  username: flight-cache
-  password: <%= ENV['FLIGHT-CACHE_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
