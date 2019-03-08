@@ -23,6 +23,8 @@ class ApplicationController < ActionController::Base
   end
 
   def token_param
-    JsonWebToken::Token.new(params[:flight_sso_token])
+    authenticate_with_http_token do |token|
+      JsonWebToken::Token.new(token || params[:flight_sso_token])
+    end
   end
 end
