@@ -89,6 +89,10 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  # Set the default url from the environment
+  Figaro.require_keys("default_host_url")
+  Rails.application.routes.default_url_options[:host] = Figaro.env.default_host_url
+
   # Store files on Amazon S3.
   config.active_storage.service = :amazon
 end
