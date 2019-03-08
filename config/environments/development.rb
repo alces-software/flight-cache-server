@@ -54,6 +54,7 @@ Rails.application.configure do
 
   # Develop on local host
   Rails.application.routes.default_url_options[:host] = 'localhost:3000'
+  Rails.application.routes.default_url_options[:protocol] = 'http'
 
   # Store files on Amazon S3.
   config.active_storage.service = :amazon

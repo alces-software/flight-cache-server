@@ -92,6 +92,7 @@ Rails.application.configure do
   # Set the default url from the environment
   Figaro.require_keys("default_host_url")
   Rails.application.routes.default_url_options[:host] = Figaro.env.default_host_url
+  Rails.application.routes.default_url_options[:protocol] = 'https'
 
   # Store files on Amazon S3.
   config.active_storage.service = :amazon
