@@ -14,6 +14,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  rescue_from CanCan::AccessDenied do |exp|
+    respond_to do |format|
+      format.json { head :forbidden }
+    end
+  end
+
   def current_user
     token_param.user
   end
