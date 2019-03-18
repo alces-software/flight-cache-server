@@ -34,12 +34,12 @@ class Ability
       can :manage, :all
     elsif user
       can [:show, :upload], Container do |container|
-        container.group == user.group
+        user.has_container?(container)
       end
       can :index, Container
       can :index, Blob
       can [:show, :download], Blob do |blob|
-        blob.container.group == user.group
+        user.has_container?(blob.container)
       end
     end
   end
