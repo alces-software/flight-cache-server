@@ -4,14 +4,6 @@ class ContainersController < ApplicationController
   before_action(except: :index) { @container ||= @blob.container }
   authorize_resource :container, except: :index
 
-  # INDEX: Action Only
-  # Loads the containers based on the current user and tag
-  load_tag_containers only: :index
-
-  def index
-    render json: ContainerSerializer.new(@containers)
-  end
-
   def show
     render json: ContainerSerializer.new(@container)
   end
