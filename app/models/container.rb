@@ -1,14 +1,12 @@
 require 'aws-sdk-s3'
 
 class Container < ApplicationRecord
-  belongs_to :group, optional: true
-  belongs_to :user, optional: true
-
-  validates :user, absence: true, if: :group
-  validates :user, presence: true, unless: :group
-
-  validates :group, absence: true, if: :user
-  validates :group, presence: true, unless: :user
+  # validates presence user XOR group
+  [owners = [:user, :group], owners.reverse].each do |owner1, owner2|
+    belongs_to owner1, optional: true
+    validates owner1, absence: true, if: owner2
+    validates owner1, presence: true, unless: owner2
+  end
 
   has_many :blobs
   belongs_to :access_tag
