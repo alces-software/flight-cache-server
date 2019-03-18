@@ -15,10 +15,6 @@ class User < ApplicationRecord
     user_containers.or(group_containers)
   end
 
-  def has_container?(container)
-    containers.include?(container)
-  end
-
   def group_containers
     Container.where(group: (default_group || -1))
   end

@@ -1,6 +1,9 @@
 require 'aws-sdk-s3'
 
 class Container < ApplicationRecord
+  belongs_to :group, optional: true
+  belongs_to :user, optional: true
+
   validates :user, absence: true, if: :group
   validates :user, presence: true, unless: :group
 
@@ -10,6 +13,19 @@ class Container < ApplicationRecord
   has_many :blobs
   belongs_to :access_tag
 
-  belongs_to :group, optional: true
-  belongs_to :user, optional: true
+  def users
+    if owner.is_a? User
+      User.where(id: user)
+    else
+      group.users
+    end
+  end
+
+  def has_user?(user)
+    users.include?(user)
+  end
+
+  def owner
+    user || group
+  end
 end

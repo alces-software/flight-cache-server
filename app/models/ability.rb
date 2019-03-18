@@ -34,12 +34,12 @@ class Ability
       can :manage, :all
     elsif user
       can [:show, :upload], Container do |container|
-        user.has_container?(container)
+        container.has_user?(user)
       end
       can :index, Container
       can :index, Blob
       can [:show, :download], Blob do |blob|
-        user.has_container?(blob.container)
+        blob.container.has_user?(user)
       end
     end
   end
