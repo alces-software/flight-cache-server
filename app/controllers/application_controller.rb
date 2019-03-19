@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   end
 
   def scope
-    raw = params.permit(:scope)[:scope].to_sym
+    raw = params.permit(:scope)[:scope]&.to_sym
     return nil unless [:user, :group, :public].include?(raw)
     raw
   end

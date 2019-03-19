@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   namespace :tag, path: :tags do
     scope ':tag' do
-      get '/', controller: :container, action: :index
+      get '/', controller: :containers, action: :index
       resource :container, controller: :containers, only: :show
       resources :blobs, only: :index
     end
