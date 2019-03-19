@@ -30,6 +30,12 @@ Rails.application.routes.draw do
 
         resources :blobs, only: :index
       end
+
+      scope :public, controller: :containers, defaults: { group: 'public' } do
+        get '/', action: :show
+
+        resources :blobs, only: :index
+      end
     end
   end
 end

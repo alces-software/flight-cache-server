@@ -30,6 +30,15 @@ class ApplicationController < ActionController::Base
     token_param.user || raise(UserMissing)
   end
 
+  def current_group
+    return nil unless params[:group]
+    if params.require(:group) == 'public'
+      public_group
+    else
+      current_user.default_group
+    end
+  end
+
   def token_param
     token = authenticate_with_http_token { |t| t }
     JsonWebToken::Token.new(token || params[:flight_sso_token])

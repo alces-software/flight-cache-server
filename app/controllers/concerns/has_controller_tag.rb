@@ -25,8 +25,8 @@ module HasControllerTag
   private
 
   def owner_param_hash
-    if params[:group]
-      { group: current_user.default_group }
+    if current_group
+      { group: current_group }
     else
       { user: current_user }
     end
