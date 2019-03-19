@@ -22,6 +22,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def public_group
+    Group.find_by_name('public')
+  end
+
   def current_user
     token_param.user || raise(UserMissing)
   end
