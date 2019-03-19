@@ -12,10 +12,14 @@ class User < ApplicationRecord
   end
 
   def containers
-    user_containers.or(group_containers)
+    user_containers.or(group_containers).or(public_containers)
   end
 
   def group_containers
     Container.where(group: (default_group || -1))
+  end
+
+  def public_containers
+    Group.find_by_name('public').containers
   end
 end
