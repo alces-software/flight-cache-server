@@ -17,10 +17,19 @@ Rails.application.routes.draw do
   namespace :tag, path: :tags do
     scope ':tag', controller: :containers do
       get '/', action: :index
-      get '/user', action: :show
-      get '/group', action: :show, defaults: { group: :true }
+      resources :blobs, only: :index, defaults: { list_all_tagged_blobs: true }
 
-      resources :blobs, only: :index
+      scope :user, controller: :containers do
+        get '/', action: :show
+
+        resources :blobs, only: :index
+      end
+
+      scope :group, controller: :containers, defaults: { group: :true } do
+        get '/', action: :show
+
+        resources :blobs, only: :index
+      end
     end
   end
 end

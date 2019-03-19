@@ -13,6 +13,15 @@ module HasControllerTag
     current_user.containers.where(access_tag: access_tag_param)
   end
 
+  def current_blobs
+    containers = if params[:list_all_tagged_blobs]
+                   current_containers
+                 else
+                   current_container
+                 end
+    Blob.where(container: containers)
+  end
+
   private
 
   def owner_param_hash
