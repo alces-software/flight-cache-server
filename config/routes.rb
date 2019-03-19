@@ -14,10 +14,10 @@ Rails.application.routes.draw do
     resources :blobs, only: :index
   end
 
-  match 'tags/:tag', via: :get, controller: :containers, action: :index
-
   namespace :tag, path: :tags do
     scope ':tag' do
+      get '/', controller: :containers, action: :index
+      resource :container, controller: :containers, only: :show
       resources :blobs, only: :index
     end
   end

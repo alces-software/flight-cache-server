@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_03_185040) do
+ActiveRecord::Schema.define(version: 2019_03_18_172029) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,10 +44,13 @@ ActiveRecord::Schema.define(version: 2019_03_03_185040) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "access_tag_id"
-    t.bigint "group_id", null: false
+    t.bigint "group_id"
+    t.bigint "user_id"
     t.index ["access_tag_id", "group_id"], name: "index_containers_on_access_tag_id_and_group_id", unique: true
+    t.index ["access_tag_id", "user_id"], name: "index_containers_on_access_tag_id_and_user_id", unique: true
     t.index ["access_tag_id"], name: "index_containers_on_access_tag_id"
     t.index ["group_id"], name: "index_containers_on_group_id"
+    t.index ["user_id"], name: "index_containers_on_user_id"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -71,5 +74,6 @@ ActiveRecord::Schema.define(version: 2019_03_03_185040) do
   add_foreign_key "blobs", "containers"
   add_foreign_key "containers", "access_tags"
   add_foreign_key "containers", "groups"
+  add_foreign_key "containers", "users"
   add_foreign_key "users", "groups"
 end
