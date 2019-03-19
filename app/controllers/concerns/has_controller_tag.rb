@@ -6,7 +6,7 @@ module HasControllerTag
   end
 
   def current_container
-    Container.where(access_tag: access_tag_param, **owner_param_hash).first
+    Container.find_by(access_tag: access_tag_param, **owner_param_hash)
   end
 
   def current_containers
