@@ -17,6 +17,8 @@ Rails.application.routes.draw do
   namespace :tag, path: :tags do
     scope ':tag', controller: :containers do
       get '/', action: :index
+      get '/user', action: :show
+      get '/group', action: :show_group
 
       resources :blobs, only: :index
     end
