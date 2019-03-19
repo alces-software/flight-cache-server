@@ -14,12 +14,8 @@ module HasControllerTag
   end
 
   def current_blobs
-    containers = if params[:list_all_tagged_blobs]
-                   current_containers
-                 else
-                   current_container
-                 end
-    Blob.where(container: containers)
+    ctr_opt = scope.nil? ? current_containers : current_container
+    Blob.where(container: ctr_opt)
   end
 
   private

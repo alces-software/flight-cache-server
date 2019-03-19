@@ -31,12 +31,19 @@ class ApplicationController < ActionController::Base
   end
 
   def current_group
-    return nil unless params[:group]
-    if params.require(:group) == 'public'
+    if scope == :public
       public_group
-    else
+    elsif scope == :group
       current_user.default_group
+    else
+      nil
     end
+  end
+
+  def scope
+    raw = params.permit(:scope)[:scope].to_sym
+    return nil unless [:user, :group, :public].include?(raw)
+    raw
   end
 
   def token_param
