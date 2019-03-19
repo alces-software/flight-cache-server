@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     scope ':tag', controller: :containers do
       get '/', action: :index
       get '/user', action: :show
-      get '/group', action: :show_group
+      get '/group', action: :show, defaults: { group: :true }
 
       resources :blobs, only: :index
     end

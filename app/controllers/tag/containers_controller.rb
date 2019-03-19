@@ -1,6 +1,8 @@
 
 module Tag
   class ContainersController < ApplicationController
+    include HasControllerTag
+
     def index
       render json: ContainerSerializer.new(
         current_user.containers
@@ -9,21 +11,7 @@ module Tag
     end
 
     def show
-      render json: ContainerSerializer.new(
-        Container.where(
-          user: current_user,
-          access_tag: access_tag_param
-        ).first
-      )
-    end
-
-    def show_group
-      render json: ContainerSerializer.new(
-        Container.where(
-          group: current_user.default_group,
-          access_tag: access_tag_param
-        ).first
-      )
+      render json: ContainerSerializer.new(current_container)
     end
   end
 end

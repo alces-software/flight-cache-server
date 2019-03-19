@@ -26,10 +26,6 @@ class ApplicationController < ActionController::Base
     token_param.user || raise(UserMissing)
   end
 
-  def access_tag_param
-    AccessTag.find_by_name(params.require(:tag))
-  end
-
   def token_param
     token = authenticate_with_http_token { |t| t }
     JsonWebToken::Token.new(token || params[:flight_sso_token])
