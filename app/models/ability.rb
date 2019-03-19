@@ -36,7 +36,6 @@ class Ability
       can [:show, :upload], Container do |container|
         container.has_user?(user)
       end
-      can :index, Container
       can :index, Blob
       can [:show, :download], Blob do |blob|
         blob.container.has_user?(user)
