@@ -9,6 +9,10 @@ module HasControllerTag
     Container.where(access_tag: access_tag_param, **owner_param_hash).first
   end
 
+  def current_containers
+    current_user.containers.where(access_tag: access_tag_param)
+  end
+
   private
 
   def owner_param_hash

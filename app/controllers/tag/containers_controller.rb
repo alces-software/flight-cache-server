@@ -4,10 +4,7 @@ module Tag
     include HasControllerTag
 
     def index
-      render json: ContainerSerializer.new(
-        current_user.containers
-                    .where(access_tag: access_tag_param)
-      )
+      render json: ContainerSerializer.new(current_containers)
     end
 
     def show
