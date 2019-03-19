@@ -1,13 +1,13 @@
 
 module Tag
   class BlobsController < ApplicationController
-    load_tag_containers
-    before_action do
-      @blobs ||= @containers.map(&:blobs).flatten
-    end
-
     def index
-      render json: BlobSerializer.new(@blobs)
+      render json: BlobSerializer.new(
+        current_user.containers
+                    .where(access_tag: access_tag_param)
+                    .map(&:blobs)
+                    .flatten
+      )
     end
   end
 end

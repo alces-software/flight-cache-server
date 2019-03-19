@@ -22,19 +22,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def self.load_tag_containers(**opts)
-    before_action(**opts) do
-      @containers ||= begin
-        Container.where(access_tag: current_tag, group: current_user.groups)
-      end
-    end
-  end
-
   def current_user
     token_param.user || raise(UserMissing)
   end
 
-  def current_tag
+  def access_tag_param
     AccessTag.find_by_name(params.require(:tag))
   end
 
