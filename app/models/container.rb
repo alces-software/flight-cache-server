@@ -11,6 +11,12 @@ class Container < ApplicationRecord
   has_many :blobs
   belongs_to :tag
 
+  # Dummy method for use in the serialization. This way the container can
+  # be determined for the model without checking its type first
+  def container
+    self
+  end
+
   def users
     if owner.is_a? User
       User.where(id: user)
