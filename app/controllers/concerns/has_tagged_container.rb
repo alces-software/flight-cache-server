@@ -2,11 +2,12 @@ module HasTaggedContainer
   extend ActiveSupport::Concern
 
   def tag_param
-    Tag.find_by_name(params.require(:tag))
+    Tag.find_by_name!(params.require(:tag))
   end
 
   def current_container
-    Container.find_by(tag: tag_param, **owner_param_hash)
+    c = Container.find_by(tag: tag_param, **owner_param_hash)
+    c || Container.create!(tag: tag_param, **owner_param_hash)
   end
 
   def current_containers
