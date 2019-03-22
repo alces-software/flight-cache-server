@@ -17,6 +17,16 @@ class Container < ApplicationRecord
     self
   end
 
+  def scope
+    if group && group.name == 'public'
+      :public
+    elsif group
+      :group
+    else
+      :user
+    end
+  end
+
   def users
     if owner.is_a? User
       User.where(id: user)

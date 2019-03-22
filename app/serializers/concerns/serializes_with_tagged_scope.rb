@@ -3,6 +3,7 @@ module SerializesWithTaggedScope
 
   included do
     attribute(:tag_name) { |o| o.container.tag.name }
-    belongs_to :tag { |o| o.container.tag }
+    attribute(:scope) { |o| o.container.scope }
+    belongs_to(:tag) { |o| o.container.tag }
   end
 end
