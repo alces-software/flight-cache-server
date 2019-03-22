@@ -14,6 +14,8 @@ Rails.application.routes.draw do
     resources :blobs, only: :index
   end
 
+  resources :tags, only: [:show, :index]
+
   namespace :tagged do
     scope ':tag' do
       get '/', controller: :containers, action: :index
