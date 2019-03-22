@@ -9,7 +9,23 @@ class Container < ApplicationRecord
   end
 
   has_many :blobs
-  belongs_to :access_tag
+  belongs_to :tag
+
+  # Dummy method for use in the serialization. This way the container can
+  # be determined for the model without checking its type first
+  def container
+    self
+  end
+
+  def scope
+    if group && group.name == 'public'
+      :public
+    elsif group
+      :group
+    else
+      :user
+    end
+  end
 
   def users
     if owner.is_a? User

@@ -9,11 +9,10 @@ class ContainersController < ApplicationController
   end
 
   def upload
-    active_storage_blob = ActiveStorage::Blob.create_after_upload!(
-      io: request.body, filename: filename_param
-    )
-    blob = Blob.create!(
-      active_storage_blob: active_storage_blob, container: @container
+    blob = Blob.upload_and_create!(
+      io: request.body,
+      filename: filename_param,
+      container: @container
     )
     render json: BlobSerializer.new(blob)
   end

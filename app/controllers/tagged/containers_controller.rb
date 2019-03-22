@@ -1,7 +1,7 @@
 
-module Tag
+module Tagged
   class ContainersController < ApplicationController
-    include HasControllerTag
+    include HasTaggedContainer
 
     def index
       render json: ContainerSerializer.new(current_containers)

@@ -1,7 +1,11 @@
+require 'concerns/serializes_with_tagged_scope'
+
 class BlobSerializer < ApplicationSerializer
+  include SerializesWithTaggedScope
+
   attributes :checksum
   attribute(:byte_size)
-  attribute(:filename) { |o| o.filename.to_s }
+  attribute(:filename) { |b| b.filename.to_s }
 
   belongs_to :container, links: {
     related: proc { |b| urls.url_for(b.container) }

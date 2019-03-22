@@ -1,7 +1,7 @@
-class ContainerSerializer < ApplicationSerializer
-  include FastJsonapi::ObjectSerializer
+require 'concerns/serializes_with_tagged_scope'
 
-  attribute(:tag) { |c| c.access_tag.name }
+class ContainerSerializer < ApplicationSerializer
+  include SerializesWithTaggedScope
 
   link(:self) { |c| urls.url_for(c) }
 
