@@ -1,7 +1,7 @@
 
-module Tag
+module Tagged
   class BlobsController < ApplicationController
-    include HasControllerTag
+    include HasTaggedContainer
 
     def index
       render json: BlobSerializer.new(current_blobs)

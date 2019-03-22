@@ -1,4 +1,4 @@
-module HasControllerTag
+module HasTaggedContainer
   extend ActiveSupport::Concern
 
   def tag_param
