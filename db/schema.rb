@@ -10,17 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_18_172029) do
+ActiveRecord::Schema.define(version: 2019_03_22_104604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "access_tags", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_access_tags_on_name", unique: true
-  end
 
   create_table "active_storage_blobs", force: :cascade do |t|
     t.string "key", null: false
@@ -43,13 +36,13 @@ ActiveRecord::Schema.define(version: 2019_03_18_172029) do
   create_table "containers", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "access_tag_id"
+    t.bigint "tag_id"
     t.bigint "group_id"
     t.bigint "user_id"
-    t.index ["access_tag_id", "group_id"], name: "index_containers_on_access_tag_id_and_group_id", unique: true
-    t.index ["access_tag_id", "user_id"], name: "index_containers_on_access_tag_id_and_user_id", unique: true
-    t.index ["access_tag_id"], name: "index_containers_on_access_tag_id"
     t.index ["group_id"], name: "index_containers_on_group_id"
+    t.index ["tag_id", "group_id"], name: "index_containers_on_tag_id_and_group_id", unique: true
+    t.index ["tag_id", "user_id"], name: "index_containers_on_tag_id_and_user_id", unique: true
+    t.index ["tag_id"], name: "index_containers_on_tag_id"
     t.index ["user_id"], name: "index_containers_on_user_id"
   end
 
@@ -58,6 +51,13 @@ ActiveRecord::Schema.define(version: 2019_03_18_172029) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_groups_on_name", unique: true
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -72,8 +72,8 @@ ActiveRecord::Schema.define(version: 2019_03_18_172029) do
 
   add_foreign_key "blobs", "active_storage_blobs"
   add_foreign_key "blobs", "containers"
-  add_foreign_key "containers", "access_tags"
   add_foreign_key "containers", "groups"
+  add_foreign_key "containers", "tags"
   add_foreign_key "containers", "users"
   add_foreign_key "users", "groups"
 end

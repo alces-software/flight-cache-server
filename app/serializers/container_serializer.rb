@@ -1,7 +1,7 @@
 class ContainerSerializer < ApplicationSerializer
   include FastJsonapi::ObjectSerializer
 
-  attribute(:tag) { |c| c.access_tag.name }
+  attribute(:tag) { |c| c.tag.name }
 
   link(:self) { |c| urls.url_for(c) }
 

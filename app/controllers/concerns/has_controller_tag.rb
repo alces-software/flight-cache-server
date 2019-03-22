@@ -1,16 +1,16 @@
 module HasControllerTag
   extend ActiveSupport::Concern
 
-  def access_tag_param
-    AccessTag.find_by_name(params.require(:tag))
+  def tag_param
+    Tag.find_by_name(params.require(:tag))
   end
 
   def current_container
-    Container.find_by(access_tag: access_tag_param, **owner_param_hash)
+    Container.find_by(tag: tag_param, **owner_param_hash)
   end
 
   def current_containers
-    current_user.containers.where(access_tag: access_tag_param)
+    current_user.containers.where(tag: tag_param)
   end
 
   def current_blobs

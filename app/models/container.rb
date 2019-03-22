@@ -9,7 +9,7 @@ class Container < ApplicationRecord
   end
 
   has_many :blobs
-  belongs_to :access_tag
+  belongs_to :tag
 
   def users
     if owner.is_a? User
