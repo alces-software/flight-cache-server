@@ -20,6 +20,10 @@ class User < ApplicationRecord
     user_containers.or(group_containers).or(public_containers)
   end
 
+  def blobs
+    Blob.where(container: containers)
+  end
+
   def group_containers
     Container.where(group: (default_group || -1))
   end
