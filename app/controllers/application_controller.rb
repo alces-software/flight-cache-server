@@ -24,6 +24,10 @@ class ApplicationController < ActionController::Base
     render json: err, status: 404
   end
 
+  rescue_from InvalidScope do |e|
+    render json: { 'error' => e.message }, status: 404
+  end
+
   def public_group
     Group.find_by_name('public')
   end
@@ -43,9 +47,9 @@ class ApplicationController < ActionController::Base
   end
 
   def scope
-    raw = params.permit(:scope)[:scope]&.to_sym
-    return nil unless [:user, :group, :public].include?(raw)
-    raw
+    params.permit(:scope)[:scope]&.to_sym.tap do |raw|
+      InvalidScope.raise_unless_valid(raw) if raw
+    end
   end
 
   def token_param
