@@ -7,19 +7,16 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   rescue_from CanCan::AccessDenied do |_err|
-    respond_to do |format|
-      format.json { head :forbidden }
-    end
+    msg = <<~MSG.chomp
+      You do not have permission to access this content
+    MSG
+    render json: { "error" => msg }, status: :forbidden
   end
 
   class UserMissing < StandardError; end
   rescue_from UserMissing do |_err|
-    respond_to do |format|
-      format.json do
-        err = { "error" => "Missing user credentials" }
-        render json: err, status: :unauthorized
-      end
-    end
+    err = { "error" => "Missing user credentials" }
+    render json: err, status: :unauthorized
   end
 
   def public_group
