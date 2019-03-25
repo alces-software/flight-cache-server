@@ -1,4 +1,5 @@
 require 'json_web_token'
+require 'errors'
 
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
@@ -13,10 +14,14 @@ class ApplicationController < ActionController::Base
     render json: { "error" => msg }, status: :forbidden
   end
 
-  class UserMissing < StandardError; end
-  rescue_from UserMissing do |_err|
+  rescue_from UserMissing do |_e|
     err = { "error" => "Missing user credentials" }
     render json: err, status: :unauthorized
+  end
+
+  rescue_from GroupMissing do |_e|
+    err = { "error" => 'You do not have a group' }
+    render json: err, status: 404
   end
 
   def public_group

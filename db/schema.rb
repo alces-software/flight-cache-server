@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_22_104604) do
+ActiveRecord::Schema.define(version: 2019_03_25_113144) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,9 +65,9 @@ ActiveRecord::Schema.define(version: 2019_03_22_104604) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "global_admin"
-    t.bigint "group_id"
+    t.bigint "default_group_id"
+    t.index ["default_group_id"], name: "index_users_on_default_group_id"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["group_id"], name: "index_users_on_group_id"
   end
 
   add_foreign_key "blobs", "active_storage_blobs"
@@ -75,5 +75,5 @@ ActiveRecord::Schema.define(version: 2019_03_22_104604) do
   add_foreign_key "containers", "groups"
   add_foreign_key "containers", "tags"
   add_foreign_key "containers", "users"
-  add_foreign_key "users", "groups"
+  add_foreign_key "users", "groups", column: "default_group_id"
 end
