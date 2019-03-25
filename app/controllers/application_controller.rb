@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
     if scope == :public
       public_group
     elsif scope == :group
-      current_user.default_group
+      current_user.default_group!
     else
       nil
     end

@@ -2,11 +2,12 @@
 require 'errors'
 
 class User < ApplicationRecord
-  belongs_to :default_group, optional: true
+  belongs_to :default_group, optional: true, class_name: 'Group'
   has_many   :user_containers, class_name: 'Container'
 
-  def default_group
-    super || raise(GroupMissing, 'The user does not have a default group')
+  def default_group!
+    return default_group if default_group
+    raise GroupMissing, 'The user does not have a default group'
   end
 
   # Adds the "groups" method so it can be used in the refactoring. This will
