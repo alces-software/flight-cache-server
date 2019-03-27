@@ -10,12 +10,6 @@ class User < ApplicationRecord
     raise GroupMissing, 'The user does not have a default group'
   end
 
-  # Adds the "groups" method so it can be used in the refactoring. This will
-  # likely become an many-to-many relationship
-  def groups
-    [default_group].reject(&:nil?)
-  end
-
   def containers
     user_containers.or(group_containers).or(public_containers)
   end
