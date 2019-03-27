@@ -1,18 +1,23 @@
+
+require 'errors'
+
 class User < ApplicationRecord
-  belongs_to :default_group,
-             optional: true,
-             foreign_key: 'group_id',
-             class_name: 'Group'
+  include HasContainerOwnership.new(:user_containers)
+
+  belongs_to :default_group, optional: true, class_name: 'Group'
   has_many   :user_containers, class_name: 'Container'
 
-  # Adds the "groups" method so it can be used in the refactoring. This will
-  # likely become an many-to-many relationship
-  def groups
-    [default_group].reject(&:nil?)
+  def default_group!
+    return default_group if default_group
+    raise GroupMissing, 'The user does not have a default group'
   end
 
   def containers
     user_containers.or(group_containers).or(public_containers)
+  end
+
+  def blobs
+    Blob.where(container: containers)
   end
 
   def group_containers

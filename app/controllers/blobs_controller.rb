@@ -1,17 +1,22 @@
 require 'active_storage/blob'
 
 class BlobsController < ApplicationController
-  load_and_authorize_resource :blob, only: [:show, :download]
+  # Allow indexing blobs against a container or scope
+  load_and_authorize_resource :container, only: :index
+  before_action only: :index do
+    @blobs ||= if @container
+                 @container.blobs
+               elsif current_scope
+                 current_scope.owns.blobs
+               else
+                 current_user.blobs
+               end
+  end
 
-  # On Index, load the blobs via a container
-  only_index = { only: :index }
-  load_resource :container, **only_index
-  authorize_resource :container, **only_index
-  load_and_authorize_resource :blob, through: :container, **only_index
+  load_and_authorize_resource :blob
 
   def index
-    serial = BlobSerializer.new(@blobs, is_collection: true)
-    render json: serial
+    render json: BlobSerializer.new(@blobs, is_collection: true)
   end
 
   def show
@@ -20,5 +25,13 @@ class BlobsController < ApplicationController
 
   def download
     redirect_to @blob.service_url
+  end
+
+  def destroy
+    if @blob.destroy
+      render json: BlobSerializer.new(@blob)
+    else
+      render json: { "error" => @blob.errors.as_json }, status: 400
+    end
   end
 end

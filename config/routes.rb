@@ -2,13 +2,13 @@ Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/admin/console', as: 'rails_admin'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
-  resources :blobs, only: :show do
+  resources :blobs, only: [:index, :show, :destroy] do
     resource :container, only: :show
 
     get :download, on: :member
   end
 
-  resources :containers, only: :show do
+  resources :containers, only: [:index, :show] do
     post 'upload/:filename', on: :member, action: :upload
 
     resources :blobs, only: :index

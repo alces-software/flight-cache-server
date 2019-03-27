@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_22_104604) do
+ActiveRecord::Schema.define(version: 2019_03_27_162348) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
 
   create_table "active_storage_blobs", force: :cascade do |t|
     t.string "key", null: false
@@ -65,15 +75,38 @@ ActiveRecord::Schema.define(version: 2019_03_22_104604) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "global_admin"
-    t.bigint "group_id"
+    t.bigint "default_group_id"
+    t.index ["default_group_id"], name: "index_users_on_default_group_id"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["group_id"], name: "index_users_on_group_id"
   end
 
+  create_table "version_associations", force: :cascade do |t|
+    t.integer "version_id"
+    t.string "foreign_key_name", null: false
+    t.integer "foreign_key_id"
+    t.string "foreign_type"
+    t.index ["foreign_key_name", "foreign_key_id", "foreign_type"], name: "index_version_associations_on_foreign_key"
+    t.index ["version_id"], name: "index_version_associations_on_version_id"
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.string "item_type", null: false
+    t.integer "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object"
+    t.datetime "created_at"
+    t.text "object_changes"
+    t.integer "transaction_id"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+    t.index ["transaction_id"], name: "index_versions_on_transaction_id"
+  end
+
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "blobs", "active_storage_blobs"
   add_foreign_key "blobs", "containers"
   add_foreign_key "containers", "groups"
   add_foreign_key "containers", "tags"
   add_foreign_key "containers", "users"
-  add_foreign_key "users", "groups"
+  add_foreign_key "users", "groups", column: "default_group_id"
 end

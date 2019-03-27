@@ -6,8 +6,7 @@ module HasTaggedContainer
   end
 
   def current_container
-    c = Container.find_by(tag: tag_param, **owner_param_hash)
-    c || Container.create!(tag: tag_param, **owner_param_hash)
+    current_scope_or_user.owns.containers.find_or_create_by(tag: tag_param)
   end
 
   def current_containers
@@ -15,17 +14,10 @@ module HasTaggedContainer
   end
 
   def current_blobs
-    ctr_opt = scope.nil? ? current_containers : current_container
-    Blob.where(container: ctr_opt)
-  end
-
-  private
-
-  def owner_param_hash
-    if current_group
-      { group: current_group }
+    if current_scope
+      current_scope.owns.blobs
     else
-      { user: current_user }
+      current_user.blobs
     end
   end
 end

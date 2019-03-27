@@ -1,8 +1,19 @@
 class ContainersController < ApplicationController
+  before_action(only: :index) do
+    @containers ||= if current_scope
+                      current_scope.owns.containers
+                    else
+                      current_user.containers
+                    end
+  end
   load_resource :container
   load_and_authorize_resource :blob
-  before_action { @container ||= @blob.container }
+  before_action { @container ||= @blob&.container }
   authorize_resource :container
+
+  def index
+    render json: ContainerSerializer.new(@containers, is_collection: true)
+  end
 
   def show
     render json: ContainerSerializer.new(@container)
