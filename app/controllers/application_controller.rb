@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
   # http://jsonapi-resources.com/v0.9/guide/basic_usage.html#Application-Controller
   protect_from_forgery with: :null_session
 
+  before_action :set_paper_trail_whodunnit
+
   rescue_from CanCan::AccessDenied do |_err|
     msg = <<~MSG.chomp
       You do not have permission to access this content

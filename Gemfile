@@ -37,7 +37,10 @@ gem 'aws-sdk-s3', require: false
 gem 'cancancan'
 gem 'jwt'
 gem 'rails_admin', '>= 1.4'
+gem 'rails_admin_history_rollback'
 gem 'fast_jsonapi'
+gem 'paper_trail'
+gem 'paper_trail-association_tracking'
 
 # Manages config files
 gem 'figaro'
