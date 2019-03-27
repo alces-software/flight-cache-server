@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     get :download, on: :member
   end
 
-  resources :containers, only: :show do
+  resources :containers, only: [:index, :show] do
     post 'upload/:filename', on: :member, action: :upload
 
     resources :blobs, only: :index
