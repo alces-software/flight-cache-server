@@ -36,28 +36,22 @@ class ApplicationController < ActionController::Base
     token_param.user || raise(UserMissing)
   end
 
-  def current_group
-    if scope == :public
-      public_group
-    elsif scope == :group
-      current_user.default_group!
-    else
-      nil
-    end
-  end
-
-  def current_owner
-    case scope
-    when :user
-      current_user
+  def current_scope
+    case scope_param
     when :group
-      current_group
+      current_user.default_group!
     when :public
       public_group
+    when :user
+      current_user
     end
   end
 
-  def scope
+  def current_scope_or_user
+    current_scope || current_user
+  end
+
+  def scope_param
     params.permit(:scope)[:scope]&.to_sym.tap do |raw|
       InvalidScope.raise_unless_valid(raw) if raw
     end
