@@ -2,6 +2,8 @@
 require 'errors'
 
 class User < ApplicationRecord
+  include HasContainerOwnership.new(:user_containers)
+
   belongs_to :default_group, optional: true, class_name: 'Group'
   has_many   :user_containers, class_name: 'Container'
 

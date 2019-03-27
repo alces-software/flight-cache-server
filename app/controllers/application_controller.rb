@@ -46,6 +46,17 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def current_owner
+    case scope
+    when :user
+      current_user
+    when :group
+      current_group
+    when :public
+      public_group
+    end
+  end
+
   def scope
     params.permit(:scope)[:scope]&.to_sym.tap do |raw|
       InvalidScope.raise_unless_valid(raw) if raw
