@@ -26,4 +26,12 @@ class BlobsController < ApplicationController
   def download
     redirect_to @blob.service_url
   end
+
+  def destroy
+    if @blob.destroy
+      render json: BlobSerializer.new(@blob)
+    else
+      render json: { "error" => @blob.errors.as_json }, status: 400
+    end
+  end
 end
