@@ -1,11 +1,13 @@
 require 'active_storage/blob'
 
 class BlobsController < ApplicationController
-  # Allow indexing blobs against a contaier
+  # Allow indexing blobs against a container or scope
   load_and_authorize_resource :container, only: :index
   before_action only: :index do
     @blobs ||= if @container
                  @container.blobs
+               elsif current_scope
+                 current_scope.owns.blobs
                else
                  current_user.blobs
                end
