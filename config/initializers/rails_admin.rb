@@ -2,16 +2,8 @@ require 'json_web_token'
 
 RailsAdmin.config do |config|
   # == Current User ==
-  # Extract the current user from the webtoken
-  config.current_user_method do
-    if (token = params[:flight_sso_token])
-      JsonWebToken::Token.new(token).user.tap do |user|
-        session[:rails_admin_user_id] = user&.id
-      end
-    elsif (id = session[:rails_admin_user_id])
-      User.find(id)
-    end
-  end
+  config.parent_controller = "::ApplicationController"
+  config.current_user_method(&:current_user)
 
   ### Popular gems integration
 
