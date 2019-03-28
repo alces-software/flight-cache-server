@@ -42,10 +42,10 @@ class Ability
       can :index, Blob
       can :index, Container
       can [:show, :download], Blob do |blob|
-        blob.container.readable?(user)
+        blob.readable?(user)
       end
       can :destroy, Blob do |blob|
-        blob.container.writable?(user)
+        blob.writable?(user)
       end
     end
   end

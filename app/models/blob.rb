@@ -12,9 +12,21 @@ class Blob < ApplicationRecord
 
   after_destroy :purge_active_storage_blob
 
+  def reabable?(other)
+    access?(:reable?, other)
+  end
+
+  def writable?(other)
+    access?(:writable?, other)
+  end
+
   private
 
   def purge_active_storage_blob
     active_storage_blob.purge
+  end
+
+  def access?(method, other)
+    container.public_send(method, other)
   end
 end
