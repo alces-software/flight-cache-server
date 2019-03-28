@@ -35,8 +35,12 @@ class Container < ApplicationRecord
     end
   end
 
-  def has_user?(user)
+  def readable?(user)
     users.include?(user)
+  end
+
+  def writable?(user)
+    readable?(user)
   end
 
   def owner
