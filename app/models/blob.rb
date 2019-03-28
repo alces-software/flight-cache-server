@@ -14,8 +14,8 @@ class Blob < ApplicationRecord
 
   after_destroy :purge_active_storage_blob
 
-  def reabable?(other)
-    access?(:reable?, other)
+  def readable?(other)
+    access?(:readable?, other)
   end
 
   def writable?(other)

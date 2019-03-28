@@ -31,16 +31,16 @@ class Ability
 
     # Protect against the nil user
     if user&.global_admin?
-      can :manage, :all
+      can(:manage, :all)
     elsif user
       [Blob, Container].each do |model|
-        can :index, model
-        can :show, model { |o| o.readable?(user) }
+        can(:index, model)
+        can(:show, model) { |o| o.readable?(user) }
       end
 
-      can :download, Blob { |b| b.readable?(user) }
-      can :destroy, Blob { |b| b.writable?(user) }
-      can :upload, Container { |c| c.writable?(user)  }
+      can(:download, Blob) { |b| b.readable?(user) }
+      can(:destroy, Blob) { |b| b.writable?(user) }
+      can(:upload, Container) { |c| c.writable?(user)  }
     end
   end
 end
