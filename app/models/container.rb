@@ -28,20 +28,26 @@ class Container < ApplicationRecord
   end
 
   def readable?(other)
-    if owner.is_a?(User) && owner == other
-      true
-    elsif owner.is_a?(Group) && other.users.include?(other)
-      true
-    else
-      false
-    end
+    access?(:readable?, other)
   end
 
-  def writable?(user)
-    readable?(user)
+  def writable?(other)
+    access?(:writable?, other)
   end
 
   def owner
     user || group
+  end
+
+  private
+
+  def access?(method, other)
+    if owner.is_a?(User) && owner == other
+      true
+    elsif owner.is_a?(Group) && other.public_send(method, other)
+      true
+    else
+      false
+    end
   end
 end

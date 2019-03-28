@@ -7,4 +7,12 @@ class Group < ApplicationRecord
   def users
     name == 'public' ? User.all : super
   end
+
+  def readable?(other)
+    users.include?(other)
+  end
+
+  def writable?(other)
+    readable?(other)
+  end
 end
