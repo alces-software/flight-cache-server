@@ -8,6 +8,8 @@ class Container < ApplicationRecord
     validates owner1, presence: true, unless: owner2
   end
 
+  delegate :restricted, :restricted?, to: :tag
+
   has_many :blobs
   belongs_to :tag
 
@@ -32,6 +34,7 @@ class Container < ApplicationRecord
   end
 
   def writable?(other)
+    return false if tag.restricted?
     access?(:writable?, other)
   end
 
