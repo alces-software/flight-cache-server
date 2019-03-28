@@ -3,6 +3,8 @@ require 'concerns/serializes_with_tagged_scope'
 class ContainerSerializer < ApplicationSerializer
   include SerializesWithTaggedScope
 
+  attribute(:restricted)
+
   link(:self) { |c| urls.url_for(c) }
 
   has_many :blobs, links: {

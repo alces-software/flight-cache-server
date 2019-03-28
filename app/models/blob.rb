@@ -14,6 +14,10 @@ class Blob < ApplicationRecord
 
   after_destroy :purge_active_storage_blob
 
+  def protected
+    super() || container.restricted?
+  end
+
   def readable?(other)
     access?(:readable?, other)
   end

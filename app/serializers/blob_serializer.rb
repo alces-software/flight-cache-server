@@ -6,6 +6,7 @@ class BlobSerializer < ApplicationSerializer
   attributes :checksum
   attribute(:byte_size)
   attribute(:filename) { |b| b.filename.to_s }
+  attribute(:protected)
 
   belongs_to :container, links: {
     related: proc { |b| urls.url_for(b.container) }

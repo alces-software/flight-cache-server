@@ -8,6 +8,8 @@ class Container < ApplicationRecord
     validates owner1, presence: true, unless: owner2
   end
 
+  delegate :restricted, :restricted?, to: :tag
+
   has_many :blobs
   belongs_to :tag
 
