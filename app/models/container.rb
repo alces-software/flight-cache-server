@@ -1,4 +1,5 @@
 require 'aws-sdk-s3'
+require 'errors'
 
 class Container < ApplicationRecord
   # validates presence user XOR group
@@ -7,6 +8,8 @@ class Container < ApplicationRecord
     validates owner1, absence: true, if: owner2
     validates owner1, presence: true, unless: owner2
   end
+
+  delegate :max_size, :restricted, :restricted?, to: :tag
 
   has_many :blobs
   belongs_to :tag
@@ -32,11 +35,20 @@ class Container < ApplicationRecord
   end
 
   def writable?(other)
+    return false if tag.restricted?
     access?(:writable?, other)
   end
 
   def owner
     user || group
+  end
+
+  def raise_if_exceeds_max_size(io)
+    return if io.size < max_size
+    raise UploadTooLarge, <<~ERROR.squish
+      Can not upload the file as the maximum size is #{max_size}B, but the file
+      is #{io.size}B
+    ERROR
   end
 
   private
