@@ -42,6 +42,15 @@ class Container < ApplicationRecord
     user || group
   end
 
+  def raise_if_exceeds_max_size(io)
+    max = Figaro.env.default_upload_limit.to_i
+    return if io.size < max
+    raise UploadTooLarge, <<~ERROR.squish
+      Can not upload the file as the maximum size is #{max}B, but the file is
+      #{io.size}B
+    ERROR
+  end
+
   private
 
   def access?(method, other)
