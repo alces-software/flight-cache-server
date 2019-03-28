@@ -2,6 +2,7 @@
 class ApplicationError < StandardError; end
 class UserMissing < ApplicationError; end
 class GroupMissing < ApplicationError; end
+
 class InvalidScope < ApplicationError
   SCOPES = [:user, :group, :public]
 
@@ -14,3 +15,5 @@ class InvalidScope < ApplicationError
     raise new(msg)
   end
 end
+
+class UploadTooLarge < ApplicationError; end

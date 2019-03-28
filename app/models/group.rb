@@ -16,7 +16,7 @@ class Group < ApplicationRecord
     if self.public?
       false
     else
-      user.include?(other)
+      users.include?(other)
     end
   end
 
