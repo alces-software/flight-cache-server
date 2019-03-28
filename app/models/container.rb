@@ -27,16 +27,14 @@ class Container < ApplicationRecord
     end
   end
 
-  def users
-    if owner.is_a? User
-      User.where(id: user)
+  def readable?(other)
+    if owner.is_a?(User) && owner == other
+      true
+    elsif owner.is_a?(Group) && other.users.include?(other)
+      true
     else
-      group.users
+      false
     end
-  end
-
-  def readable?(user)
-    users.include?(user)
   end
 
   def writable?(user)
