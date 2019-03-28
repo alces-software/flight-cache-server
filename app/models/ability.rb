@@ -33,20 +33,14 @@ class Ability
     if user&.global_admin?
       can :manage, :all
     elsif user
-      can :show, Container do |container|
-        container.readable?(user)
+      [Blob, Container].each do |model|
+        can :index, model
+        can :show, model { |o| o.readable?(user) }
       end
-      can :upload, Container do |container|
-        container.writable?(user)
-      end
-      can :index, Blob
-      can :index, Container
-      can [:show, :download], Blob do |blob|
-        blob.readable?(user)
-      end
-      can :destroy, Blob do |blob|
-        blob.writable?(user)
-      end
+
+      can :download, Blob { |b| b.readable?(user) }
+      can :destroy, Blob { |b| b.writable?(user) }
+      can :upload, Container { |c| c.writable?(user)  }
     end
   end
 end
