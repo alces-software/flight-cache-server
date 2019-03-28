@@ -1,4 +1,5 @@
 require 'aws-sdk-s3'
+require 'errors'
 
 class Container < ApplicationRecord
   # validates presence user XOR group

@@ -30,6 +30,10 @@ class ApplicationController < ActionController::Base
     render json: { 'error' => e.message }, status: 404
   end
 
+  rescue_from UploadTooLarge do |e|
+    render json: { 'error' => e.message }, status: 413
+  end
+
   def public_group
     Group.find_by_name('public')
   end
