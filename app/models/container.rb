@@ -32,6 +32,7 @@ class Container < ApplicationRecord
   end
 
   def writable?(other)
+    return false if tag.restricted?
     access?(:writable?, other)
   end
 
