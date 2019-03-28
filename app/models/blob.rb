@@ -17,6 +17,7 @@ class Blob < ApplicationRecord
   end
 
   def writable?(other)
+    return false if self.protected?
     access?(:writable?, other)
   end
 
