@@ -11,6 +11,20 @@ RSpec.describe ScopeParser do
       it 'returns the user model for :user' do
         expect(subject.parse(:user)).to eq(current_user)
       end
+
+      it "returns the user's group for :group" do
+        expect(subject.parse(:group)).to eq(current_user.default_group)
+      end
+
+      context 'when parsing the :global scope' do
+        it 'returns a group' do
+          expect(subject.parse(:global)).to be_a(Group)
+        end
+
+        it 'is named global' do
+          expect(subject.parse(:global).name).to eq('global')
+        end
+      end
     end
   end
 end
