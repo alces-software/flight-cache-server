@@ -12,10 +12,15 @@ ScopeParser = Struct.new(:current_user) do
       current_user
     when current_user.default_group&.name
       current_user.default_group
-    end
+    end || parse_admin(scope)
   end
 
   private
+
+  def parse_admin(scope)
+    return nil unless current_user.global_admin?
+    User.find_by_email(scope)
+  end
 
   def global_group
     Group.find_or_create_by!(name: 'global')

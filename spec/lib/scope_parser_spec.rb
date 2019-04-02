@@ -3,11 +3,12 @@ require 'scope_parser'
 
 RSpec.describe ScopeParser do
   subject { described_class.new(current_user) }
+  let(:other_user) { create(:user, email: 'other-user@example.com') }
 
-  context 'when the current_user is a regular user' do
-    let(:current_user) { build(:user) }
+  describe '#parse' do
+    context 'when the current_user is a regular user' do
+      let(:current_user) { build(:user) }
 
-    describe '#parse' do
       it 'returns nil for nil' do
         expect(subject.parse(nil)).to eq(nil)
       end
@@ -29,6 +30,10 @@ RSpec.describe ScopeParser do
         expect(subject.parse(group.name)).to eq(group)
       end
 
+      it 'can not parse the other user' do
+        expect(subject.parse(other_user.email)).to eq(nil)
+      end
+
       context 'when parsing the :global scope' do
         it 'returns a group' do
           expect(subject.parse(:global)).to be_a(Group)
@@ -37,6 +42,14 @@ RSpec.describe ScopeParser do
         it 'is named global' do
           expect(subject.parse(:global).name).to eq('global')
         end
+      end
+    end
+
+    context 'when the current user is an admin' do
+      let(:current_user) { build(:user, global_admin: true) }
+
+      it 'can parse other users by email' do
+        expect(subject.parse(other_user.email)).to eq(other_user)
       end
     end
   end
