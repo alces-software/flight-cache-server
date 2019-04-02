@@ -1,5 +1,6 @@
 ScopeParser = Struct.new(:current_user) do
   def parse(scope)
+    return nil if scope.blank?
     scope = scope.to_s
     case scope
     when 'user'
@@ -12,7 +13,12 @@ ScopeParser = Struct.new(:current_user) do
       current_user
     when current_user.default_group&.name
       current_user.default_group
-    end || parse_admin(scope)
+    else
+      parse_admin(scope)
+    end.tap do |obj|
+      next if obj
+      raise InvalidScope, "Could not resolve the scope: #{scope}"
+    end
   end
 
   private

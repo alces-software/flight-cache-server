@@ -14,6 +14,10 @@ RSpec.describe ScopeParser do
         expect(subject.parse(nil)).to eq(nil)
       end
 
+      it 'returns nil for empty string' do
+        expect(subject.parse('')).to eq(nil)
+      end
+
       it 'returns the user model for :user' do
         expect(subject.parse(:user)).to eq(current_user)
       end
@@ -32,11 +36,15 @@ RSpec.describe ScopeParser do
       end
 
       it 'can not parse the other user' do
-        expect(subject.parse(other_user.email)).to eq(nil)
+        expect do
+          subject.parse(other_user.email)
+        end.to raise_error(InvalidScope)
       end
 
       it 'can not parse the other group' do
-        expect(subject.parse(other_group.name)).to eq(nil)
+        expect do
+          subject.parse(other_group.name)
+        end.to raise_error(InvalidScope)
       end
 
       context 'when parsing the :global scope' do
