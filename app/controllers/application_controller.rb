@@ -1,5 +1,33 @@
+#==============================================================================
+# Copyright (C) 2019-present Alces Flight Ltd.
+#
+# This file is part of flight-cache-server.
+#
+# This program and the accompanying materials are made available under
+# the terms of the Eclipse Public License 2.0 which is available at
+# <https://www.eclipse.org/legal/epl-2.0>, or alternative license
+# terms made available by Alces Flight Ltd - please direct inquiries
+# about licensing to licensing@alces-flight.com.
+#
+# This project is distributed in the hope that it will be useful, but
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+# IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS
+# OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A
+# PARTICULAR PURPOSE. See the Eclipse Public License 2.0 for more
+# details.
+#
+# You should have received a copy of the Eclipse Public License 2.0
+# along with this project. If not, see:
+#
+#  https://opensource.org/licenses/EPL-2.0
+#
+# For more information on flight-account, please visit:
+# https://github.com/alces-software/flight-cache-server
+#===============================================================================
+
 require 'json_web_token'
 require 'errors'
+require 'scope_parser'
 
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
@@ -26,12 +54,12 @@ class ApplicationController < ActionController::Base
     render json: err, status: 404
   end
 
-  rescue_from InvalidScope do |e|
-    render json: { 'error' => e.message }, status: 404
-  end
-
   rescue_from UploadTooLarge do |e|
     render json: { 'error' => e.message }, status: 413
+  end
+
+  rescue_from InvalidScope do |e|
+    render json: { 'error' => e.message }, status: 404
   end
 
   def public_group
@@ -43,14 +71,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_scope
-    case scope_param
-    when :group
-      current_user.default_group!
-    when :public
-      public_group
-    when :user
-      current_user
-    end
+    ScopeParser.new(current_user).parse(scope_param)
   end
 
   def current_scope_or_user
@@ -58,9 +79,7 @@ class ApplicationController < ActionController::Base
   end
 
   def scope_param
-    params.permit(:scope)[:scope]&.to_sym.tap do |raw|
-      InvalidScope.raise_unless_valid(raw) if raw
-    end
+    params.permit(:scope)[:scope]
   end
 
   def token_param

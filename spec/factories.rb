@@ -7,7 +7,7 @@ FactoryBot.define do
   factory :user do
     email { "user@example.com" }
     global_admin { false }
-    group
+    default_group { build(:group) }
   end
 
   factory :blob do
