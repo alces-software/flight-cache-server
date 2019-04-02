@@ -1,5 +1,6 @@
 # README
 
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
@@ -25,11 +26,15 @@ Things you may want to cover:
 
 # Configuration
 
-This app uses figaro to configure certain components. See the example config for
-details:
+This app uses figaro to configure certain components. The following needs to be
+set in the environment or via a figaro config file:
 
 ```
-cat config/application.yml.example
+default_bucket:         # The S3 bucket the files are stored in
+default_region:         # The S3 region to use
+json_web_token_secret:  # The secret key for checking token signatures
+default_upload_limit:   # The default max file size for any particular blob
+user_upload_limit:      # The default combined maximum a user can upload
 ```
 
 # Accessing the RailsAdmin

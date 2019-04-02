@@ -54,4 +54,8 @@ class User < ApplicationRecord
   def public_containers
     Group.find_by_name('public').containers
   end
+
+  def user_upload_limit
+    super() || Figaro.env.user_upload_limit
+  end
 end
