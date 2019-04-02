@@ -8,6 +8,10 @@ RSpec.describe ScopeParser do
     let(:current_user) { build(:user) }
 
     describe '#parse' do
+      it 'returns nil for nil' do
+        expect(subject.parse(nil)).to eq(nil)
+      end
+
       it 'returns the user model for :user' do
         expect(subject.parse(:user)).to eq(current_user)
       end

@@ -10,7 +10,7 @@ ScopeParser = Struct.new(:current_user) do
       global_group
     when current_user.email
       current_user
-    when current_user.default_group.name
+    when current_user.default_group&.name
       current_user.default_group
     end
   end
