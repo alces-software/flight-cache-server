@@ -42,9 +42,9 @@ module HasTaggedContainer
 
   def current_blobs
     if current_scope
-      current_scope.owns.blobs
+      current_container.blobs
     else
-      current_user.blobs
+      Blob.where(container: current_containers)
     end
   end
 end
