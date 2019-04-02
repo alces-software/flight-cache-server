@@ -1,12 +1,15 @@
 ScopeParser = Struct.new(:current_user) do
   def parse(scope)
+    scope = scope.to_s
     case scope
-    when :user
+    when 'user'
       current_user
-    when :group
+    when 'group'
       current_user.default_group
-    when :global
+    when 'global'
       global_group
+    when current_user.email
+      current_user
     end
   end
 

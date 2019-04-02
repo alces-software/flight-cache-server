@@ -16,6 +16,10 @@ RSpec.describe ScopeParser do
         expect(subject.parse(:group)).to eq(current_user.default_group)
       end
 
+      it 'returns the current_user when email matches' do
+        expect(subject.parse(current_user.email)).to eq(current_user)
+      end
+
       context 'when parsing the :global scope' do
         it 'returns a group' do
           expect(subject.parse(:global)).to be_a(Group)
