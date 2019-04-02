@@ -19,7 +19,7 @@ ScopeParser = Struct.new(:current_user) do
 
   def parse_admin(scope)
     return nil unless current_user.global_admin?
-    User.find_by_email(scope)
+    User.find_by_email(scope) || Group.find_by_name(scope)
   end
 
   def global_group

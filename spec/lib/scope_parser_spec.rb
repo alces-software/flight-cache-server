@@ -4,6 +4,7 @@ require 'scope_parser'
 RSpec.describe ScopeParser do
   subject { described_class.new(current_user) }
   let(:other_user) { create(:user, email: 'other-user@example.com') }
+  let(:other_group) { create(:group, name: 'other-group-name') }
 
   describe '#parse' do
     context 'when the current_user is a regular user' do
@@ -34,6 +35,10 @@ RSpec.describe ScopeParser do
         expect(subject.parse(other_user.email)).to eq(nil)
       end
 
+      it 'can not parse the other group' do
+        expect(subject.parse(other_group.name)).to eq(nil)
+      end
+
       context 'when parsing the :global scope' do
         it 'returns a group' do
           expect(subject.parse(:global)).to be_a(Group)
@@ -50,6 +55,10 @@ RSpec.describe ScopeParser do
 
       it 'can parse other users by email' do
         expect(subject.parse(other_user.email)).to eq(other_user)
+      end
+
+      it 'can parse other groups by name' do
+        expect(subject.parse(other_group.name)).to eq(other_group)
       end
     end
   end
