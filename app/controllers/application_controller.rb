@@ -27,6 +27,7 @@
 
 require 'json_web_token'
 require 'errors'
+require 'scope_parser'
 
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
@@ -53,10 +54,6 @@ class ApplicationController < ActionController::Base
     render json: err, status: 404
   end
 
-  rescue_from InvalidScope do |e|
-    render json: { 'error' => e.message }, status: 404
-  end
-
   rescue_from UploadTooLarge do |e|
     render json: { 'error' => e.message }, status: 413
   end
@@ -70,14 +67,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_scope
-    case scope_param
-    when :group
-      current_user.default_group!
-    when :public
-      public_group
-    when :user
-      current_user
-    end
+    ScopeParser.new(current_user).parse(scope_param)
   end
 
   def current_scope_or_user
@@ -85,9 +75,7 @@ class ApplicationController < ActionController::Base
   end
 
   def scope_param
-    params.permit(:scope)[:scope]&.to_sym.tap do |raw|
-      InvalidScope.raise_unless_valid(raw) if raw
-    end
+    params.permit(:scope)[:scope]
   end
 
   def token_param
