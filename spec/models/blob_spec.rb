@@ -29,11 +29,7 @@ require 'rails_helper'
 
 RSpec.describe Blob, type: :model do
   describe '::upload_and_create!' do
-    context 'when the file size exceeds the max size' do
-      let(:container) { build(:container) }
-      let(:payload) { 'a' * (container.max_size + 1) }
-      let(:io) { StringIO.new(payload) }
-
+    shared_examples 'raises UploadTooLarge' do
       it 'errors' do
         expect do
           described_class.upload_and_create!(
@@ -41,6 +37,23 @@ RSpec.describe Blob, type: :model do
           )
         end.to raise_error(UploadTooLarge)
       end
+    end
+
+    let(:io) { StringIO.new(payload) }
+
+    context 'when the file size exceeds the max size' do
+      let(:container) { build(:container) }
+      let(:payload) { 'a' * (container.max_size + 1) }
+
+      include_examples 'raises UploadTooLarge'
+    end
+
+    context 'when exceeding a user upload limit' do
+      let(:user) { create(:user, upload_limit: 5) }
+      let(:container) { create(:container, group: nil, user: user) }
+      let(:payload) { 'a' * (user.remaining_limit + 1) }
+
+      include_examples 'raises UploadTooLarge'
     end
   end
 end
