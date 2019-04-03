@@ -54,4 +54,26 @@ class User < ApplicationRecord
   def public_containers
     Group.find_by_name('public').containers
   end
+
+  def upload_limit
+    super() || Figaro.env.user_upload_limit.to_i
+  end
+
+  def used_limit
+    Blob.where(container: user_containers)
+        .map(&:byte_size)
+        .reduce(0, :+)
+  end
+
+  def remaining_limit
+    upload_limit - used_limit
+  end
+
+  def raise_if_exceeds_limit(io)
+    return if io.size < remaining_limit
+    raise UploadTooLarge, <<~ERROR.squish
+      Can not upload file as it will exceeded your personal quota. The file is
+      #{io.size}B but you only have #{remaining_limit}B remaining.
+    ERROR
+  end
 end

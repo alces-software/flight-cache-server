@@ -44,7 +44,7 @@ RSpec.describe Ability, type: :ability do
     context 'when it shares a group with the container' do
       include_context 'with container blobs'
 
-      let(:container) { create(:container, group: user.group) }
+      let(:container) { create(:container, group: user.default_group) }
 
       it { is_expected.to be_can(:show, container) }
       it { is_expected.to be_can(:show, container.blobs.first) }
@@ -55,7 +55,7 @@ RSpec.describe Ability, type: :ability do
     context 'when it does not share a group' do
       include_context 'with container blobs'
 
-      let(:other_group) { create(:group, name: "not-#{user.group.name}") }
+      let(:other_group) { create(:group, name: "not-#{user.default_group.name}") }
       let(:container) { create(:container, group: other_group) }
 
       it { is_expected.not_to be_can(:show, container) }

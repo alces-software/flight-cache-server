@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
     render json: { 'error' => e.message }, status: 413
   end
 
-  rescue_from InvalidScope do |e|
+  rescue_from MissingError do |e|
     render json: { 'error' => e.message }, status: 404
   end
 
