@@ -29,7 +29,7 @@ module HasTaggedContainer
   extend ActiveSupport::Concern
 
   def tag_param
-    Tag.find_by_name!(params.require(:tag))
+    Tag.find_by_name(tag_name_param) || MissingTagError.raise(tag_name_param)
   end
 
   def current_container
@@ -46,5 +46,11 @@ module HasTaggedContainer
     else
       Blob.where(container: current_containers)
     end
+  end
+
+  private
+
+  def tag_name_param
+    params.require(:tag)
   end
 end

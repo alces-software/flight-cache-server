@@ -27,8 +27,16 @@
 #===============================================================================
 
 class ApplicationError < StandardError; end
-class UserMissing < ApplicationError; end
-class GroupMissing < ApplicationError; end
+class MissingError < ApplicationError; end
+class UserMissing < MissingError; end
+class GroupMissing < MissingError; end
 
 class UploadTooLarge < ApplicationError; end
-class InvalidScope < ApplicationError; end
+class InvalidScope < MissingError; end
+class MissingTagError < MissingError
+  def self.raise(tag)
+    Kernel.raise self, <<~ERROR.squish
+      Could not locate tag: #{tag}
+    ERROR
+  end
+end
