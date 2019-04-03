@@ -27,7 +27,7 @@ class JsonWebToken
     end
 
     def user
-      User.find_by_email(email)
+      User.find_or_create_by!(email: email)
     end
 
     private

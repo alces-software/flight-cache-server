@@ -7,7 +7,8 @@ FactoryBot.define do
   factory :user do
     email { "user@example.com" }
     global_admin { false }
-    group
+    default_group { build(:group) }
+    upload_limit { 1048576 }
   end
 
   factory :blob do
@@ -29,5 +30,6 @@ FactoryBot.define do
 
   factory :tag do
     name { "test-cloud-application" }
+    max_size { 1024 }
   end
 end
