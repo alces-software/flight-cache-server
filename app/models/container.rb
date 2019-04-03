@@ -27,6 +27,7 @@
 
 require 'aws-sdk-s3'
 require 'errors'
+require 'scope_parser'
 
 class Container < ApplicationRecord
   # validates presence user XOR group
@@ -48,13 +49,7 @@ class Container < ApplicationRecord
   end
 
   def scope
-    if group && group.name == 'public'
-      :public
-    elsif group
-      :group
-    else
-      :user
-    end
+    ScopeParser.find_container_scope(self)
   end
 
   def readable?(other)

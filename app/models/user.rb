@@ -25,7 +25,7 @@
 # https://github.com/alces-software/flight-cache-server
 #===============================================================================
 
-
+require 'scope_parser'
 require 'errors'
 
 class User < ApplicationRecord
@@ -40,7 +40,7 @@ class User < ApplicationRecord
   end
 
   def containers
-    user_containers.or(group_containers).or(public_containers)
+    user_containers.or(group_containers).or(global_containers)
   end
 
   def blobs
@@ -51,8 +51,8 @@ class User < ApplicationRecord
     Container.where(group: (default_group || -1))
   end
 
-  def public_containers
-    Group.find_by_name('public').containers
+  def global_containers
+    ScopeParser.global_group.containers
   end
 
   def upload_limit

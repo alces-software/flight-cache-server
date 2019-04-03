@@ -32,7 +32,7 @@ class Group < ApplicationRecord
   has_many :users, foreign_key: 'default_group_id'
 
   def readable?(other)
-    if self.public?
+    if self.global?
       true
     else
       users.include?(other)
@@ -40,14 +40,14 @@ class Group < ApplicationRecord
   end
 
   def writable?(other)
-    if self.public?
+    if self.global?
       false
     else
       users.include?(other)
     end
   end
 
-  def public?
-    name == 'public'
+  def global?
+    name == 'global'
   end
 end
