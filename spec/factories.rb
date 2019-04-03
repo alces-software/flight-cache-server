@@ -29,5 +29,6 @@ FactoryBot.define do
 
   factory :tag do
     name { "test-cloud-application" }
+    max_size { 100 }
   end
 end
