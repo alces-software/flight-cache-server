@@ -58,4 +58,14 @@ class User < ApplicationRecord
   def upload_limit
     super() || Figaro.env.user_upload_limit.to_i
   end
+
+  def used_limit
+    Blob.where(container: user_containers)
+        .map(&:byte_size)
+        .reduce(0, :+)
+  end
+
+  def remaining_limit
+    upload_limit - used_limit
+  end
 end
