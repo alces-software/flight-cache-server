@@ -26,6 +26,20 @@
 #===============================================================================
 
 ScopeParser = Struct.new(:current_user) do
+  def self.global_group
+    Group.find_or_create_by!(name: 'global')
+  end
+
+  def self.find_container_scope(container)
+    if container.group == global_group
+      'global'
+    elsif container.group
+      'group'
+    else
+      'user'
+    end
+  end
+
   def parse(scope)
     return nil if scope.blank?
     scope = scope.to_s
@@ -35,7 +49,7 @@ ScopeParser = Struct.new(:current_user) do
     when 'group'
       current_user.default_group
     when 'global'
-      global_group
+      self.class.global_group
     when current_user.email
       current_user
     when current_user.default_group&.name
@@ -53,9 +67,5 @@ ScopeParser = Struct.new(:current_user) do
   def parse_admin(scope)
     return nil unless current_user.global_admin?
     User.find_by_email(scope) || Group.find_by_name(scope)
-  end
-
-  def global_group
-    Group.find_or_create_by!(name: 'global')
   end
 end
