@@ -27,4 +27,6 @@
 
 class TagSerializer < ApplicationSerializer
   attribute :name
+  attribute :max_size
+  attribute :restricted
 end
