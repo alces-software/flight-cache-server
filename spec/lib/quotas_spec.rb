@@ -32,13 +32,14 @@ require 'stringio'
 RSpec.describe Quotas do
   let(:payload) { 'a' * size }
   let(:io) { StringIO.new(payload) }
+  let(:offset) { nil }
 
   # Either the user/group must be overridden in each context
   let(:user) { nil }
   let(:group) { nil }
   let(:container) { build(:container, user: user, group: group) }
 
-  subject { described_class.new(io, container) }
+  subject { described_class.new(io, container, offset) }
 
   shared_examples 'an empty file quota' do
     let(:size) { 0 }
@@ -71,6 +72,16 @@ RSpec.describe Quotas do
         end.to raise_error(UploadTooLarge)
       end
     end
+
+    context 'when the filesize is offset' do
+      let(:offset) { container.tag.max_size }
+
+      it 'is unaffected and still errors' do
+        expect do
+          subject.enforce_tag_limit
+        end.to raise_error(UploadTooLarge)
+      end
+    end
   end
 
   context 'with a user container' do
@@ -87,6 +98,16 @@ RSpec.describe Quotas do
           expect do
             subject.enforce_user_limit
           end.to raise_error(UploadTooLarge)
+        end
+
+        context 'when the filesize is offset' do
+          let(:offset) { user.remaining_limit }
+
+          it 'passes' do
+            expect do
+              subject.enforce_user_limit
+            end.not_to raise_error
+          end
         end
       end
     end
