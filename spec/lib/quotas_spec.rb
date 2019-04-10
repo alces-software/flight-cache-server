@@ -33,10 +33,14 @@ RSpec.describe Quotas do
   let(:payload) { 'a' * size }
   let(:io) { StringIO.new(payload) }
 
+  # Either the user/group must be overridden in each context
+  let(:user) { nil }
+  let(:group) { nil }
+  let(:container) { build(:container, user: user, group: group) }
+
   subject { described_class.new(io, container) }
 
-  context 'with an empty file' do
-    let(:container) { build(:container) }
+  shared_examples 'an empty file quota' do
     let(:size) { 0 }
 
     describe '#enforce_tag_limit' do
@@ -48,7 +52,7 @@ RSpec.describe Quotas do
     end
   end
 
-  context 'when the file size exceeds the container limit' do
+  shared_examples 'an excessive tag quota' do
     let(:container) { build(:container) }
     let(:size) { container.tag.max_size + 1 }
 
@@ -59,5 +63,19 @@ RSpec.describe Quotas do
         end.to raise_error(UploadTooLarge)
       end
     end
+  end
+
+  context 'with a user container' do
+    let(:user) { build(:user) }
+
+    it_behaves_like 'an empty file quota'
+    it_behaves_like 'an excessive tag quota'
+  end
+
+  context 'with a group container' do
+    let(:group) { build(:group) }
+
+    it_behaves_like 'an empty file quota'
+    it_behaves_like 'an excessive tag quota'
   end
 end
