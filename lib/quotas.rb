@@ -48,11 +48,11 @@ Quotas = Struct.new(:io, :container, :offset) do
 
   def enforce_user_limit
     return unless container.user
-    return if io.size - offset < container.user.remaining_limit
+    remaining_limit = container.user.remaining_limit + offset
+    return if io.size < remaining_limit
     raise UploadTooLarge, <<~ERROR.squish
       Can not upload file as it will exceeded your personal quota. The file is
-      #{io.size}B but you only have #{container.user.remaining_limit}B
-      remaining.
+      #{io.size}B but you only have #{remaining_limit}B remaining.
     ERROR
   end
 end
