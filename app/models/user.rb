@@ -68,12 +68,4 @@ class User < ApplicationRecord
   def remaining_limit
     upload_limit - used_limit
   end
-
-  def raise_if_exceeds_limit(io)
-    return if io.size < remaining_limit
-    raise UploadTooLarge, <<~ERROR.squish
-      Can not upload file as it will exceeded your personal quota. The file is
-      #{io.size}B but you only have #{remaining_limit}B remaining.
-    ERROR
-  end
 end
