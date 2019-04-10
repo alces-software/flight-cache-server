@@ -33,6 +33,11 @@ Quotas = Struct.new(:io, :container, :offset) do
     self.offset ||= 0
   end
 
+  def enforce_all
+    enforce_tag_limit
+    enforce_user_limit
+  end
+
   def enforce_tag_limit
     return if io.size < container.tag.max_size
     raise UploadTooLarge, <<~ERROR.squish
