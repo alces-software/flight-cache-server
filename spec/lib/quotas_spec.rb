@@ -50,6 +50,14 @@ RSpec.describe Quotas do
         end.not_to raise_error
       end
     end
+
+    describe '#enforce_user_limit' do
+      it 'passes' do
+        expect do
+          subject.enforce_user_limit
+        end.not_to raise_error
+      end
+    end
   end
 
   shared_examples 'an excessive tag quota' do
@@ -70,6 +78,18 @@ RSpec.describe Quotas do
 
     it_behaves_like 'an empty file quota'
     it_behaves_like 'an excessive tag quota'
+
+    context 'when the user limit is exceeded' do
+      let(:size) { user.remaining_limit + 1 }
+
+      describe '#enforce_user_limit' do
+        it 'errors' do
+          expect do
+            subject.enforce_user_limit
+          end.to raise_error(UploadTooLarge)
+        end
+      end
+    end
   end
 
   context 'with a group container' do
