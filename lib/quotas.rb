@@ -21,51 +21,38 @@
 #
 #  https://opensource.org/licenses/EPL-2.0
 #
-# For more information on flight-account, please visit:
+# For more information on flight-, please visit:
 # https://github.com/alces-software/flight-cache-server
 #===============================================================================
 
-require 'scope_parser'
 require 'errors'
 
-class User < ApplicationRecord
-  include HasContainerOwnership.new(:user_containers)
-
-  belongs_to :default_group, optional: true, class_name: 'Group'
-  has_many   :user_containers, class_name: 'Container'
-
-  def default_group!
-    return default_group if default_group
-    raise GroupMissing, 'The user does not have a default group'
+Quotas = Struct.new(:io, :container, :offset) do
+  def initialize(*a)
+    super
+    self.offset ||= 0
   end
 
-  def containers
-    user_containers.or(group_containers).or(global_containers)
+  def enforce_all
+    enforce_tag_limit
+    enforce_user_limit
   end
 
-  def blobs
-    Blob.where(container: containers)
+  def enforce_tag_limit
+    return if io.size < container.tag.max_size
+    raise UploadTooLarge, <<~ERROR.squish
+      Can not upload the file as the maximum size is
+      #{container.tag.max_size}B, but the file is #{io.size}B
+    ERROR
   end
 
-  def group_containers
-    Container.where(group: (default_group || -1))
-  end
-
-  def global_containers
-    ScopeParser.global_group.containers
-  end
-
-  def upload_limit
-    super() || Figaro.env.user_upload_limit.to_i
-  end
-
-  def used_limit
-    Blob.where(container: user_containers)
-        .map(&:byte_size)
-        .reduce(0, :+)
-  end
-
-  def remaining_limit
-    upload_limit - used_limit
+  def enforce_user_limit
+    return unless container.user
+    remaining_limit = container.user.remaining_limit + offset
+    return if io.size < remaining_limit
+    raise UploadTooLarge, <<~ERROR.squish
+      Can not upload file as it will exceeded your personal quota. The file is
+      #{io.size}B but you only have #{remaining_limit}B remaining.
+    ERROR
   end
 end
