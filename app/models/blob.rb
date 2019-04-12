@@ -32,7 +32,7 @@ class Blob < ApplicationRecord
     Quotas.new(io, container).enforce_all
     transaction do
       as = ActiveStorage::Blob.create_after_upload!(io: io, filename: filename)
-      create!(active_storage_blob: as, container: container)
+      create!(active_storage_blob: as, container: container, filename: filename)
     end
   end
 
