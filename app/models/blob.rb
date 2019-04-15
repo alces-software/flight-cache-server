@@ -30,7 +30,7 @@ require 'errors'
 
 class Blob < ApplicationRecord
   def self.upload_and_create!(io:, **kwargs)
-    Quotas.new(io, container).enforce_all
+    Quotas.new(io, kwargs[:container]).enforce_all
     blob, as = transaction do
       b = create!(**kwargs)
       a = ActiveStorage::Blob.create_after_upload!(io: io, filename: as_blob_filename)

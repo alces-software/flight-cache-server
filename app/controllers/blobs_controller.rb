@@ -32,8 +32,7 @@ require 'stringio'
 class BlobsController < ApplicationController
   wrap_parameters format: :json
 
-  # Allow indexing blobs against a container or scope
-  load_and_authorize_resource :container, only: :index
+  load_and_authorize_resource :container, only: [:index, :create]
   before_action only: :index do
     @blobs ||= if @container
                  @container.blobs
@@ -52,6 +51,11 @@ class BlobsController < ApplicationController
 
   def show
     render json: BlobSerializer.new(@blob)
+  end
+
+  def create
+    b = Blob.upload_and_create!(io: payload_io, container: @container, **blob_params)
+    render json: BlobSerializer.new(b)
   end
 
   def update
