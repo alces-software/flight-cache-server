@@ -26,6 +26,8 @@
 #===============================================================================
 
 require 'active_storage/blob'
+require 'base64'
+require 'stringio'
 
 class BlobsController < ApplicationController
   wrap_parameters format: :json
@@ -53,7 +55,11 @@ class BlobsController < ApplicationController
   end
 
   def update
-    @blob.update(**blob_params)
+    if payload_io
+      @blob.upload_and_update!(io: payload_io, **blob_params)
+    else
+      @blob.update(**blob_params)
+    end
     render json: BlobSerializer.new(@blob)
   end
 
@@ -73,5 +79,10 @@ class BlobsController < ApplicationController
 
   def blob_params
     params.require(:blob).permit([:filename, :title]).to_h.symbolize_keys
+  end
+
+  def payload_io
+    return nil unless params.has_key?(:payload)
+    StringIO.new(Base64.decode64(params.require(:payload)))
   end
 end
