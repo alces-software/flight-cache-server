@@ -40,3 +40,11 @@ class MissingTagError < MissingError
     ERROR
   end
 end
+
+class MissingActiveStorageBlob < MissingError
+  def self.raise(blob)
+    Kernel.raise self, <<~ERROR
+      Blob '#{blob.id}' is not associated with an uploaded file
+    ERROR
+  end
+end

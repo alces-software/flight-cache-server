@@ -26,25 +26,32 @@
 #===============================================================================
 
 require 'quotas'
+require 'errors'
 
 class Blob < ApplicationRecord
   def self.upload_and_create!(io:, filename:, container:)
     Quotas.new(io, container).enforce_all
-    transaction do
-      as = ActiveStorage::Blob.create_after_upload!(io: io, filename: filename)
-      create!(active_storage_blob: as, container: container, filename: filename)
+    blob, as = transaction do
+      b = create!(container: container, filename: filename)
+      a = ActiveStorage::Blob.create_after_upload!(io: io, filename: filename)
+      [b, a]
     end
+    blob.tap { |b| b.update!(active_storage_blob: as) }
   end
 
   belongs_to :container
-  belongs_to :active_storage_blob, class_name: 'ActiveStorage::Blob'
-  delegate_missing_to :active_storage_blob
+  belongs_to :active_storage_blob, class_name: 'ActiveStorage::Blob', optional: true
+  delegate_missing_to :active_storage_blob_or_error
 
   validates :filename, uniqueness: { scope: :container }
 
   alias_attribute :protected?, :protected
 
   after_destroy :purge_active_storage_blob
+
+  def active_storage_blob_or_error
+    active_storage_blob || MissingActiveStorageBlob.raise(self)
+  end
 
   def protected
     super() || container.restricted?

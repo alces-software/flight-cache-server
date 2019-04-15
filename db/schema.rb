@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_12_142656) do
+ActiveRecord::Schema.define(version: 2019_04_15_115348) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 2019_04_12_142656) do
   end
 
   create_table "blobs", force: :cascade do |t|
-    t.serial "active_storage_blob_id", null: false
+    t.bigint "active_storage_blob_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "container_id", null: false
