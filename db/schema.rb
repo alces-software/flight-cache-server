@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_15_115348) do
+ActiveRecord::Schema.define(version: 2019_04_15_164550) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,9 +55,10 @@ ActiveRecord::Schema.define(version: 2019_04_15_115348) do
     t.bigint "tag_id"
     t.bigint "group_id"
     t.bigint "user_id"
+    t.boolean "admin", default: false
     t.index ["group_id"], name: "index_containers_on_group_id"
-    t.index ["tag_id", "group_id"], name: "index_containers_on_tag_id_and_group_id", unique: true
-    t.index ["tag_id", "user_id"], name: "index_containers_on_tag_id_and_user_id", unique: true
+    t.index ["tag_id", "group_id", "admin"], name: "index_containers_on_tag_id_and_group_id_and_admin", unique: true
+    t.index ["tag_id", "user_id", "admin"], name: "index_containers_on_tag_id_and_user_id_and_admin", unique: true
     t.index ["tag_id"], name: "index_containers_on_tag_id"
     t.index ["user_id"], name: "index_containers_on_user_id"
   end
