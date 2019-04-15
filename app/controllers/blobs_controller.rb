@@ -37,9 +37,13 @@ class BlobsController < ApplicationController
     @blobs ||= if @container
                  @container.blobs
                elsif current_scope
-                 current_scope.owns.blobs
+                 Blob.where(
+                   container: current_scope.owns.containers.where(admin: admin_request)
+                 )
                else
-                 current_user.blobs
+                 Blob.where(
+                   container: current_user.containers.where(admin: admin_request)
+                 )
                end
   end
 

@@ -33,11 +33,13 @@ module HasTaggedContainer
   end
 
   def current_container
-    current_scope_or_user.owns.containers.find_or_create_by(tag: tag_param)
+    current_scope_or_user.owns
+                         .containers
+                         .find_or_create_by(tag: tag_param, admin: admin_request)
   end
 
   def current_containers
-    current_user.containers.where(tag: tag_param)
+    current_user.containers.where(tag: tag_param, admin: admin_request)
   end
 
   def current_blobs

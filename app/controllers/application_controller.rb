@@ -84,4 +84,8 @@ class ApplicationController < ActionController::Base
             cookies[:flight_sso]
     JsonWebToken::Token.new(token)
   end
+
+  def admin_request
+    params['admin_request'] || false
+  end
 end

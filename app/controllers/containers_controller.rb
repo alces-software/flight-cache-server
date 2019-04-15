@@ -28,9 +28,9 @@
 class ContainersController < ApplicationController
   before_action(only: :index) do
     @containers ||= if current_scope
-                      current_scope.owns.containers
+                      current_scope.owns.containers.where(admin: admin_request)
                     else
-                      current_user.containers
+                      current_user.containers.where(admin: admin_request)
                     end
   end
   load_resource :container

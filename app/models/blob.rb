@@ -90,7 +90,7 @@ class Blob < ApplicationRecord
   private
 
   def purge_active_storage_blob
-    active_storage_blob.purge
+    active_storage_blob&.purge
   end
 
   def access?(method, other)

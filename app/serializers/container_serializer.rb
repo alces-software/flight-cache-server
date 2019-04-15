@@ -31,6 +31,7 @@ class ContainerSerializer < ApplicationSerializer
   include SerializesWithTaggedScope
 
   attribute(:restricted)
+  attribute(:admin)
 
   link(:self) { |c| urls.url_for(c) }
 
