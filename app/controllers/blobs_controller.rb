@@ -28,6 +28,8 @@
 require 'active_storage/blob'
 
 class BlobsController < ApplicationController
+  wrap_parameters format: :json
+
   # Allow indexing blobs against a container or scope
   load_and_authorize_resource :container, only: :index
   before_action only: :index do
@@ -50,6 +52,11 @@ class BlobsController < ApplicationController
     render json: BlobSerializer.new(@blob)
   end
 
+  def update
+    @blob.update(**blob_params)
+    render json: BlobSerializer.new(@blob)
+  end
+
   def download
     redirect_to @blob.service_url
   end
@@ -60,5 +67,11 @@ class BlobsController < ApplicationController
     else
       render json: { "error" => @blob.errors.as_json }, status: 400
     end
+  end
+
+  private
+
+  def blob_params
+    params.require(:blob).permit([:filename, :title]).to_h.symbolize_keys
   end
 end

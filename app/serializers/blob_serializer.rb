@@ -34,6 +34,7 @@ class BlobSerializer < ApplicationSerializer
   attribute(:byte_size)
   attribute(:filename) { |b| b.filename.to_s }
   attribute(:protected)
+  attribute(:title)
 
   belongs_to :container, links: {
     related: proc { |b| urls.url_for(b.container) }
