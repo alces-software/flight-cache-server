@@ -27,32 +27,17 @@
 
 require 'scope_parser'
 require 'errors'
+require 'container_join'
 
 class User < ApplicationRecord
-  include HasContainerOwnership.new(:user_containers)
+  include ContainerJoin::Mixin
 
   belongs_to :default_group, optional: true, class_name: 'Group'
-  has_many   :user_containers, class_name: 'Container'
+  has_many   :containers
 
   def default_group!
     return default_group if default_group
     raise GroupMissing, 'The user does not have a default group'
-  end
-
-  def containers
-    user_containers.or(group_containers).or(global_containers)
-  end
-
-  def blobs
-    Blob.where(container: containers)
-  end
-
-  def group_containers
-    Container.where(group: (default_group || -1))
-  end
-
-  def global_containers
-    ScopeParser.global_group.containers
   end
 
   def upload_limit
@@ -60,9 +45,10 @@ class User < ApplicationRecord
   end
 
   def used_limit
-    Blob.where(container: user_containers)
-        .map(&:byte_size)
-        .reduce(0, :+)
+    joins.owns(admin: false)
+         .blobs
+         .map(&:byte_size)
+         .reduce(0, :+)
   end
 
   def remaining_limit

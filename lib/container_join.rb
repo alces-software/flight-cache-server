@@ -36,6 +36,12 @@ ContainerRelationship = Struct.new(:containers) do
 end
 
 ContainerJoin = Struct.new(:entity) do
+  module Mixin
+    def joins
+      ContainerJoin.new(self)
+    end
+  end
+
   def self.global
     new(Group.find_or_create_by!(name: 'global'))
   end
