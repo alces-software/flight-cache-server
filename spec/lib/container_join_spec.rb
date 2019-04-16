@@ -32,7 +32,7 @@ require 'stringio'
 RSpec.describe ContainerJoin do
   subject { described_class.new(entity) }
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, default_group: group) }
   let(:group) { create(:group) }
 
   let!(:group_container) { create(:container_base, group: group) }
@@ -44,7 +44,7 @@ RSpec.describe ContainerJoin do
     create(:container_base, group: group, admin: true)
   end
   let!(:global_container) do
-    create(:container_base, group: described_class.global_group)
+    create(:container_base, group: described_class.global.entity)
   end
 
   context 'with a regular user entity' do
@@ -58,13 +58,17 @@ RSpec.describe ContainerJoin do
       end
     end
 
-#     describe '#all.containers' do
-#       it 'returns all containers it joins onto' do
-#         expect(subject.all.containers).to contain_exactly(
-#           user_container, user_admin_container, group_container, global_container
-#         )
-#       end
-#     end
+    describe '#all.containers' do
+      it 'returns all the containers with the user/group/global scopes' do
+        expect(subject.all.containers).to contain_exactly(
+          user_container,
+          user_admin_container,
+          group_container,
+          group_admin_container,
+          global_container
+        )
+      end
+    end
   end
 
   context 'with a group entity' do
@@ -74,6 +78,14 @@ RSpec.describe ContainerJoin do
       it 'returns the containers it directly owns' do
         expect(subject.owns.containers).to contain_exactly(
           group_container, group_admin_container
+        )
+      end
+    end
+
+    describe '#all.containers' do
+      it 'returns all the containers within the group/global scopes' do
+        expect(subject.all.containers).to contain_exactly(
+          group_container, group_admin_container, global_container
         )
       end
     end

@@ -47,5 +47,13 @@ ContainerJoin = Struct.new(:entity) do
               end
     ContainersRelationship.where(**owner_h)
   end
+
+  def all
+    array = [self.class.global.owns.containers, owns.containers].tap do |a|
+      a << self.class.new(entity.default_group).owns.containers if entity.is_a?(User)
+    end
+    containers = array.reduce { |memo, c| memo ? memo.or(c) : c }
+    ContainersRelationship.new(containers)
+  end
 end
 
