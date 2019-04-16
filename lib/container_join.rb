@@ -25,17 +25,17 @@
 # https://github.com/alces-software/flight-cache-server
 #===============================================================================
 
-ContainerJoin = Struct.new(:entity) do
-  ContainersRelationship = Struct.new(:containers) do
-    def self.where(**kwargs)
-      new(Container.where(**kwargs))
-    end
-
-    def blobs
-      Blob.where(container: containers)
-    end
+ContainerRelationship = Struct.new(:containers) do
+  def self.where(**kwargs)
+    new(Container.where(**kwargs))
   end
 
+  def blobs
+    Blob.where(container: containers)
+  end
+end
+
+ContainerJoin = Struct.new(:entity) do
   def self.global
     new(Group.find_or_create_by!(name: 'global'))
   end
@@ -50,7 +50,7 @@ ContainerJoin = Struct.new(:entity) do
                 { id: -1 } # Dummy clause that returns an empty relationship
               end
     where_h[:admin] = admin unless admin.nil?
-    ContainersRelationship.where(**where_h)
+    ContainerRelationship.where(**where_h)
   end
 
   def all(admin: nil)
@@ -62,7 +62,7 @@ ContainerJoin = Struct.new(:entity) do
       array << self.class.new(entity.default_group).owns(admin: admin).containers
     end
     containers = array.reduce { |memo, c| memo ? memo.or(c) : c }
-    ContainersRelationship.new(containers)
+    ContainerRelationship.new(containers)
   end
 end
 

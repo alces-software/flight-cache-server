@@ -28,6 +28,7 @@
 require 'active_storage/blob'
 require 'base64'
 require 'stringio'
+require 'container_join'
 
 class BlobsController < ApplicationController
   wrap_parameters format: :json
@@ -37,13 +38,13 @@ class BlobsController < ApplicationController
     @blobs ||= if @container
                  @container.blobs
                elsif current_scope
-                 Blob.where(
-                   container: current_scope.owns.containers.where(admin: admin_request)
-                 )
+                 ContainerJoin.new(current_scope)
+                              .owns(admin: admin_request)
+                              .blobs
                else
-                 Blob.where(
-                   container: current_user.containers.where(admin: admin_request)
-                 )
+                 ContainerJoin.new(current_user)
+                              .all(admin: admin_request)
+                              .blobs
                end
   end
 

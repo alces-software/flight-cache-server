@@ -28,10 +28,10 @@
 class ContainersController < ApplicationController
   before_action(only: :index) do
     @containers ||= if current_scope
-                      current_scope.owns.containers.where(admin: admin_request)
+                      ContainerJoin.new(current_scope).owns(admin: admin_request)
                     else
-                      current_user.containers.where(admin: admin_request)
-                    end
+                      ContainerJoin.new(current_user).all(admin: admin_request)
+                    end.containers
   end
   load_resource :container
   load_and_authorize_resource :blob

@@ -25,6 +25,8 @@
 # https://github.com/alces-software/flight-cache-server
 #===============================================================================
 
+require 'container_join'
+
 module HasTaggedContainer
   extend ActiveSupport::Concern
 
@@ -33,20 +35,24 @@ module HasTaggedContainer
   end
 
   def current_container
-    current_scope_or_user.owns
-                         .containers
-                         .find_or_create_by(tag: tag_param, admin: admin_request)
+    ContainerJoin.new(current_scope_or_user)
+                 .owns
+                 .containers
+                 .find_or_create_by(tag: tag_param, admin: admin_request)
   end
 
   def current_containers
-    current_user.containers.where(tag: tag_param, admin: admin_request)
+    ContainerJoin.new(current_user)
+                 .all(admin: admin_request)
+                 .containers
+                 .where(tag: tag_param)
   end
 
   def current_blobs
     if current_scope
       current_container.blobs
     else
-      Blob.where(container: current_containers)
+      ContainerRelationship.new(current_containers).blobs
     end
   end
 
