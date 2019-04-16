@@ -25,7 +25,6 @@
 # https://github.com/alces-software/flight-cache-server
 #===============================================================================
 
-
 ContainerJoin = Struct.new(:entity) do
   ContainersRelationship = Struct.new(:containers) do
     def self.where(**kwargs)
@@ -33,11 +32,18 @@ ContainerJoin = Struct.new(:entity) do
     end
   end
 
+  def self.global
+    new(Group.find_or_create_by!(name: 'global'))
+  end
+
   def owns
-    owner_h = if entity.is_a?(User)
+    owner_h = case entity
+              when User
                 { user: entity }
+              when Group
+                { group: entity }
               else
-                raise ApplicationError, "'#{entity}' can not own containers2"
+                { id: -1 } # Dummy clause that returns an empty relationship
               end
     ContainersRelationship.where(**owner_h)
   end

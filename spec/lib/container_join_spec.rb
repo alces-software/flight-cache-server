@@ -28,27 +28,52 @@
 require 'rails_helper'
 require 'container_join'
 require 'stringio'
-require 'scope_parser'
 
 RSpec.describe ContainerJoin do
   subject { described_class.new(entity) }
 
+  let(:user) { create(:user) }
+  let(:group) { create(:group) }
+
+  let!(:group_container) { create(:container_base, group: group) }
+  let!(:user_container) { create(:container_base, user: user) }
+  let!(:user_admin_container) do
+    create(:container_base, user: user, admin: true)
+  end
+  let!(:group_admin_container) do
+    create(:container_base, group: group, admin: true)
+  end
+  let!(:global_container) do
+    create(:container_base, group: described_class.global_group)
+  end
+
   context 'with a regular user entity' do
     let(:entity) { user }
-    let(:user) { create(:user) }
-    let(:group) { create(:group) }
-
-    let!(:group_container) { create(:container_base, group: group) }
-    let!(:user_container) { create(:container_base, user: user) }
-    let!(:user_admin_container) {
-      create(:container_base, user: user, admin: true)
-    }
-    let!(:global_container) { create(:container_base, group: ScopeParser.global_group) }
 
     describe '#owns.containers' do
       it 'returns the containers it directly owns' do
         expect(subject.owns.containers).to contain_exactly(
           user_container, user_admin_container
+        )
+      end
+    end
+
+#     describe '#all.containers' do
+#       it 'returns all containers it joins onto' do
+#         expect(subject.all.containers).to contain_exactly(
+#           user_container, user_admin_container, group_container, global_container
+#         )
+#       end
+#     end
+  end
+
+  context 'with a group entity' do
+    let(:entity) { group }
+
+    describe '#owns.containers' do
+      it 'returns the containers it directly owns' do
+        expect(subject.owns.containers).to contain_exactly(
+          group_container, group_admin_container
         )
       end
     end
