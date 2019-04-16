@@ -30,6 +30,10 @@ ContainerJoin = Struct.new(:entity) do
     def self.where(**kwargs)
       new(Container.where(**kwargs))
     end
+
+    def blobs
+      Blob.where(container: containers)
+    end
   end
 
   def self.global
