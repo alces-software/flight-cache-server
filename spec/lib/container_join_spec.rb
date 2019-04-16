@@ -56,6 +56,16 @@ RSpec.describe ContainerJoin do
           user_container, user_admin_container
         )
       end
+
+      it 'can filter out the admin containers' do
+        expect(subject.owns(admin: false).containers).to \
+          contain_exactly(user_container)
+      end
+
+      it 'can filter out the non admin containers' do
+        expect(subject.owns(admin: true).containers).to \
+          contain_exactly(user_admin_container)
+      end
     end
 
     describe '#all.containers' do
@@ -79,6 +89,16 @@ RSpec.describe ContainerJoin do
         expect(subject.owns.containers).to contain_exactly(
           group_container, group_admin_container
         )
+      end
+
+      it 'can filter out the admin containers' do
+        expect(subject.owns(admin: false).containers).to \
+          contain_exactly(group_container)
+      end
+
+      it 'can filer out the non admin containers' do
+        expect(subject.owns(admin: true).containers).to \
+          contain_exactly(group_admin_container)
       end
     end
 

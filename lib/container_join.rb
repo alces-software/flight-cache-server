@@ -36,8 +36,8 @@ ContainerJoin = Struct.new(:entity) do
     new(Group.find_or_create_by!(name: 'global'))
   end
 
-  def owns
-    owner_h = case entity
+  def owns(admin: nil)
+    where_h = case entity
               when User
                 { user: entity }
               when Group
@@ -45,7 +45,8 @@ ContainerJoin = Struct.new(:entity) do
               else
                 { id: -1 } # Dummy clause that returns an empty relationship
               end
-    ContainersRelationship.where(**owner_h)
+    where_h[:admin] = admin unless admin.nil?
+    ContainersRelationship.where(**where_h)
   end
 
   def all
