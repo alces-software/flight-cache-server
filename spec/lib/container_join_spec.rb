@@ -47,6 +47,20 @@ RSpec.describe ContainerJoin do
     create(:container_base, group: described_class.global.entity)
   end
 
+  shared_examples 'all filters by admin' do
+    it 'filters out the admin containers' do
+      subject.all(admin: false).containers.each do |container|
+        expect(container).not_to be_admin
+      end
+    end
+
+    it 'filters out the non admin containers' do
+      subject.all(admin: true).containers.each do |container|
+        expect(container).to be_admin
+      end
+    end
+  end
+
   context 'with a regular user entity' do
     let(:entity) { user }
 
@@ -78,6 +92,8 @@ RSpec.describe ContainerJoin do
           global_container
         )
       end
+
+      include_examples 'all filters by admin'
     end
   end
 
@@ -108,6 +124,8 @@ RSpec.describe ContainerJoin do
           group_container, group_admin_container, global_container
         )
       end
+
+      include_examples 'all filters by admin'
     end
   end
 end
