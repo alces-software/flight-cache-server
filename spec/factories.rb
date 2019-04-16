@@ -31,10 +31,14 @@ FactoryBot.define do
   end
 
   factory :user do
-    email { "user@example.com" }
+    sequence(:email) { |n| "user#{n}@example.com" }
     global_admin { false }
     default_group { build(:group) }
     upload_limit { 1048576 }
+
+    factory :admin do
+      global_admin { true }
+    end
   end
 
   factory :blob do
@@ -58,6 +62,7 @@ FactoryBot.define do
     tag
     group { nil }
     user { nil }
+    admin { false }
 
     factory :user_container do
       user
@@ -69,7 +74,7 @@ FactoryBot.define do
   end
 
   factory :tag do
-    name { "test-cloud-application" }
+    sequence(:name) { |n| "autotag#{n}" }
     max_size { 1024 }
   end
 end
