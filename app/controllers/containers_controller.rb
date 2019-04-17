@@ -25,14 +25,13 @@
 # https://github.com/alces-software/flight-cache-server
 #===============================================================================
 
+require 'container_join'
+
 class ContainersController < ApplicationController
+  include ContainerJoin::ControllerMixin
+
   before_action(only: :index) do
-    @containers ||= ContainerJoin.resolve(
-      owner: current_scope_or_user,
-      all: current_scope.nil?,
-      tag: current_tag,
-      admin: admin_request
-    ).containers
+    @containers ||= resolve_container_join.containers
   end
   load_resource :container
   load_and_authorize_resource :blob

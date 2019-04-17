@@ -46,6 +46,17 @@ ContainerJoin = Struct.new(:entity) do
     end
   end
 
+  module ControllerMixin
+    def resolve_container_join
+      ContainerJoin.resolve(
+        owner: current_scope_or_user,
+        all: current_scope.nil?,
+        tag: current_tag,
+        admin: admin_request
+      )
+    end
+  end
+
   def self.global
     new(Group.find_or_create_by!(name: 'global'))
   end

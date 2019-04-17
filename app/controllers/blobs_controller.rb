@@ -32,19 +32,15 @@ require 'container_join'
 require 'errors'
 
 class BlobsController < ApplicationController
+  include ContainerJoin::ControllerMixin
+
   load_and_authorize_resource :container
 
   before_action only: :index do
     @blobs ||= if @container
                  @container.blobs
-               elsif current_scope
-                 ContainerJoin.new(current_scope)
-                              .owns(admin: admin_request)
-                              .blobs
                else
-                 ContainerJoin.new(current_user)
-                              .all(admin: admin_request)
-                              .blobs
+                 resolve_container_join.blobs
                end
   end
 
