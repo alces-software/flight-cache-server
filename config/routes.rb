@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   resources :containers, only: [:index, :show] do
     post 'upload/:filename', on: :member, action: :upload
 
-    resources :blobs, only: [:index, :create]
+    resources :blobs, param: :filename, only: [:index, :show, :update, :create, :destroy]
   end
 
   resources :tags, only: [:show, :index]

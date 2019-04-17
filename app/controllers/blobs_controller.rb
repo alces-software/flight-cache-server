@@ -31,7 +31,8 @@ require 'stringio'
 require 'container_join'
 
 class BlobsController < ApplicationController
-  load_and_authorize_resource :container, only: [:index, :create]
+  load_and_authorize_resource :container
+
   before_action only: :index do
     @blobs ||= if @container
                  @container.blobs
@@ -46,7 +47,14 @@ class BlobsController < ApplicationController
                end
   end
 
-  load_and_authorize_resource :blob
+  before_action do
+    @blob ||= if blob_id_param
+      Blob.find(blob_id_param)
+    elsif @container && filename_param
+      Blob.find_by(filename: filename_param, container: @container)
+    end
+  end
+  authorize_resource :blob
 
   def index
     render json: BlobSerializer.new(@blobs, is_collection: true)
@@ -83,6 +91,14 @@ class BlobsController < ApplicationController
   end
 
   private
+
+  def blob_id_param
+    params[:id]
+  end
+
+  def filename_param
+    params[:filename]
+  end
 
   def blob_params
     params.permit([:filename, :title, :label]).to_h.symbolize_keys
