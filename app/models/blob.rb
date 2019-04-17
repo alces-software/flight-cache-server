@@ -50,10 +50,8 @@ class Blob < ApplicationRecord
   validates :filename, uniqueness: { scope: :container }
   validates :label, format: {
     with: /\A([[:alnum:]]+(\/[[:alnum:]]+)*)?\Z/,
-    message: <<~MSG.chomp
-      must be an alphanumeric string separated by zero or more "/" characters.
-      It must start and end with alphanumeric character(s), unless it is an
-      empty string.
+    message: <<~MSG.squish
+      must be empty or an alphanumeric string delimited by '/' characters
     MSG
   }
 
