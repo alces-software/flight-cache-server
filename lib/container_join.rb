@@ -30,6 +30,10 @@ ContainerRelationship = Struct.new(:containers) do
     new(Container.where(**kwargs))
   end
 
+  def tagged(tag)
+    self.class.new(containers.where(tag: tag))
+  end
+
   def blobs
     Blob.where(container: containers)
   end
@@ -44,6 +48,15 @@ ContainerJoin = Struct.new(:entity) do
 
   def self.global
     new(Group.find_or_create_by!(name: 'global'))
+  end
+
+  def self.resolve(owner:, all: true, tag: nil, admin: nil)
+    base = if all
+      new(owner).all(admin: admin)
+    else
+      new(owner).owns(admin: admin)
+    end
+    tag ? base.tagged(tag) : base
   end
 
   def owns(admin: nil)

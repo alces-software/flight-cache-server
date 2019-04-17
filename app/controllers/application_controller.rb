@@ -78,6 +78,11 @@ class ApplicationController < ActionController::Base
     current_scope || current_user
   end
 
+  def current_tag
+    return unless params[:tag]
+    Tag.find_by(name: params.require(:tag)) || MissingTagError.raise(params.require(:tag))
+  end
+
   def scope_param
     params.permit(:scope)[:scope]
   end
