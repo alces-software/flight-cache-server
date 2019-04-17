@@ -31,8 +31,6 @@ require 'stringio'
 require 'container_join'
 
 class BlobsController < ApplicationController
-  wrap_parameters format: :json
-
   load_and_authorize_resource :container, only: [:index, :create]
   before_action only: :index do
     @blobs ||= if @container
@@ -87,11 +85,10 @@ class BlobsController < ApplicationController
   private
 
   def blob_params
-    params.require(:blob).permit([:filename, :title]).to_h.symbolize_keys
+    params.permit([:filename, :title]).to_h.symbolize_keys
   end
 
   def payload_io
-    return nil unless params.has_key?(:payload)
-    StringIO.new(Base64.decode64(params.require(:payload)))
+    params.require(:payload).to_io
   end
 end
