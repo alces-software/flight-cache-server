@@ -29,6 +29,7 @@ require 'active_storage/blob'
 require 'base64'
 require 'stringio'
 require 'container_join'
+require 'errors'
 
 class BlobsController < ApplicationController
   load_and_authorize_resource :container
@@ -51,7 +52,8 @@ class BlobsController < ApplicationController
     @blob ||= if blob_id_param
       Blob.find(blob_id_param)
     elsif @container && filename_param
-      Blob.find_by(filename: filename_param, container: @container)
+      b = Blob.find_by(filename: filename_param, container: @container)
+      b || MissingBlobError.raise(@container, filename_param)
     end
   end
   authorize_resource :blob
