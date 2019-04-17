@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_15_164550) do
+ActiveRecord::Schema.define(version: 2019_04_17_112205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2019_04_15_164550) do
     t.boolean "protected", default: false
     t.string "title"
     t.string "filename", null: false
+    t.string "label", default: "", null: false
     t.index ["active_storage_blob_id"], name: "index_blobs_on_active_storage_blob_id", unique: true
     t.index ["container_id"], name: "index_blobs_on_container_id"
     t.index ["filename", "container_id"], name: "index_blobs_on_filename_and_container_id", unique: true

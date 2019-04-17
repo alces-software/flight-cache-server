@@ -48,6 +48,14 @@ class Blob < ApplicationRecord
   delegate_missing_to :active_storage_blob_or_error
 
   validates :filename, uniqueness: { scope: :container }
+  validates :label, format: {
+    with: /\A([[:alnum:]]+(\/[[:alnum:]]+)*)?\Z/,
+    message: <<~MSG.chomp
+      must be an alphanumeric string separated by zero or more "/" characters.
+      It must start and end with alphanumeric character(s), unless it is an
+      empty string.
+    MSG
+  }
 
   alias_attribute :protected?, :protected
 

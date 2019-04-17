@@ -85,7 +85,7 @@ class BlobsController < ApplicationController
   private
 
   def blob_params
-    params.permit([:filename, :title]).to_h.symbolize_keys
+    params.permit([:filename, :title, :label]).to_h.symbolize_keys
   end
 
   def payload_io
