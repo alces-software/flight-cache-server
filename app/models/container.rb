@@ -68,7 +68,9 @@ class Container < ApplicationRecord
   private
 
   def access?(method, other)
-    if owner.is_a?(User) && owner == other
+    if admin?
+      false
+    elsif owner.is_a?(User) && owner == other
       true
     elsif owner.is_a?(Group) && owner.public_send(method, other)
       true

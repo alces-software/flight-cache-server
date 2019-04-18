@@ -62,6 +62,10 @@ class ApplicationController < ActionController::Base
     render json: { 'error' => e.message }, status: 404
   end
 
+  rescue_from ActiveRecord::RecordInvalid do |e|
+    render json: { 'error' => e.message }, status: 400
+  end
+
   def current_user
     token_param.user || raise(UserMissing)
   end
@@ -74,8 +78,13 @@ class ApplicationController < ActionController::Base
     current_scope || current_user
   end
 
+  def current_tag
+    return unless params[:tag]
+    Tag.find_by(name: params.require(:tag)) || MissingTagError.raise(params.require(:tag))
+  end
+
   def scope_param
-    params.permit(:scope)[:scope]
+    params[:scope] || params[:bucket_scope]
   end
 
   def token_param
@@ -83,5 +92,13 @@ class ApplicationController < ActionController::Base
             authenticate_with_http_token { |t| t }  || \
             cookies[:flight_sso]
     JsonWebToken::Token.new(token)
+  end
+
+  def admin_request
+    if current_user.global_admin?
+      params['admin_request'] || false
+    else
+      false
+    end
   end
 end

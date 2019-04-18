@@ -25,9 +25,11 @@
 # https://github.com/alces-software/flight-cache-server
 #===============================================================================
 
+require 'container_join'
+
 ScopeParser = Struct.new(:current_user) do
   def self.global_group
-    Group.find_or_create_by!(name: 'global')
+    ContainerJoin.global.entity
   end
 
   def self.find_container_scope(container)
