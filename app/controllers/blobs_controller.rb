@@ -37,11 +37,18 @@ class BlobsController < ApplicationController
   load_and_authorize_resource :container
 
   before_action only: :index do
-    @blobs ||= if @container
-                 @container.blobs
-               else
-                 resolve_container_join.blobs
-               end
+    @blobs ||= begin
+      rel = if @container
+        ContainerRelationship.new([@container])
+      else
+        resolve_container_join
+      end
+      if label_param
+        rel.labeled_blobs(label_param, wild: wild_param)
+      else
+        rel.blobs
+      end
+    end
   end
 
   before_action do
@@ -104,5 +111,13 @@ class BlobsController < ApplicationController
 
   def payload_io
     params.require(:payload).to_io
+  end
+
+  def label_param
+    params[:label]
+  end
+
+  def wild_param
+    params[:wild]
   end
 end

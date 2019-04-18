@@ -37,6 +37,15 @@ ContainerRelationship = Struct.new(:containers) do
   def blobs
     Blob.where(container: containers)
   end
+
+  def labeled_blobs(label, wild: false)
+    label_str = ApplicationRecord.sanitize_sql_like(label)
+    if wild
+      blobs.where('label = ? OR label LIKE ?', label_str, "#{label_str}/%")
+    else
+      blobs.where(label: label_str)
+    end
+  end
 end
 
 ContainerJoin = Struct.new(:entity) do
