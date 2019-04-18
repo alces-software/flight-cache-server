@@ -14,6 +14,8 @@ Rails.application.routes.draw do
     resources :blobs, param: :filename, only: [:index, :show, :update, :create, :destroy]
   end
 
+  resources :containers, as: :buckets, path: :buckets, param: :'scope/:tag', only: :show
+
   resources :tags, only: [:show, :index]
 
   namespace :tagged do

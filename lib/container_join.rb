@@ -56,6 +56,8 @@ ContainerJoin = Struct.new(:entity) do
   end
 
   module ControllerMixin
+    extend ActiveSupport::Concern
+
     def resolve_container_join
       ContainerJoin.resolve(
         owner: current_scope_or_user,
@@ -63,6 +65,17 @@ ContainerJoin = Struct.new(:entity) do
         tag: current_tag,
         admin: admin_request
       )
+    end
+
+    class_methods do
+      def load_container_from_tag_scope_and_admin(**kwargs)
+        before_action(**kwargs) do
+          next unless (current_scope && current_tag && !admin_request.nil?)
+          @container ||= ContainerJoin.new(current_scope)
+                                      .owns_container(current_tag,
+                                                      admin: admin_request)
+        end
+      end
     end
   end
 
@@ -77,6 +90,10 @@ ContainerJoin = Struct.new(:entity) do
       new(owner).owns(admin: admin)
     end
     tag ? base.tagged(tag) : base
+  end
+
+  def owns_container(tag, admin: false)
+    owns.containers.find_or_create_by(tag: tag, admin: admin)
   end
 
   def owns(admin: nil)

@@ -33,9 +33,13 @@ class ContainersController < ApplicationController
   before_action(only: :index) do
     @containers ||= resolve_container_join.containers
   end
+
   load_resource :container
+
   load_and_authorize_resource :blob
   before_action { @container ||= @blob&.container }
+
+  load_container_from_tag_scope_and_admin
   authorize_resource :container
 
   def index
