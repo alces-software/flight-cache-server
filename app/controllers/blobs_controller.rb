@@ -53,7 +53,7 @@ class BlobsController < ApplicationController
     end
   end
 
-  before_action only: [:show, :update, :destroy] do
+  before_action only: [:show, :update, :destroy, :download] do
     @blob ||= if blob_id_param
       Blob.find(blob_id_param)
     elsif @container && filename_param

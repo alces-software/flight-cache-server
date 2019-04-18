@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   end
 
   concern :container_blob do
-    resources :blobs, param: :filename, only: [:index, :show, :update, :create, :destroy]
+    resources :blobs, param: :filename, only: [:index, :show, :update, :create, :destroy] do
+      get :download, on: :member
+    end
   end
 
   resources :containers, only: [:index, :show], concerns: :container_blob do
