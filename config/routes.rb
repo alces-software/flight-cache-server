@@ -8,13 +8,20 @@ Rails.application.routes.draw do
     get :download, on: :member
   end
 
-  resources :containers, only: [:index, :show] do
-    post 'upload/:filename', on: :member, action: :upload
-
+  concern :container_blob do
     resources :blobs, param: :filename, only: [:index, :show, :update, :create, :destroy]
   end
 
-  resources :containers, as: :buckets, path: :buckets, param: :'scope/:tag', only: :show
+  resources :containers, only: [:index, :show], concerns: :container_blob do
+    post 'upload/:filename', on: :member, action: :upload
+  end
+
+  resources :containers,
+            as: :buckets,
+            path: :buckets,
+            param: :'scope/:tag',
+            concerns: :container_blob,
+            only: :show
 
   resources :tags, only: [:show, :index]
 

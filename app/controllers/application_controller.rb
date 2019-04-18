@@ -84,7 +84,7 @@ class ApplicationController < ActionController::Base
   end
 
   def scope_param
-    params.permit(:scope)[:scope]
+    params[:scope] || params[:bucket_scope]
   end
 
   def token_param

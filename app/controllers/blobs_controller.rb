@@ -34,7 +34,9 @@ require 'errors'
 class BlobsController < ApplicationController
   include ContainerJoin::ControllerMixin
 
-  load_and_authorize_resource :container
+  load_resource :container
+  load_container_from_tag_scope_and_admin
+  authorize_resource :container
 
   before_action only: :index do
     @blobs ||= begin
@@ -51,7 +53,7 @@ class BlobsController < ApplicationController
     end
   end
 
-  before_action do
+  before_action only: [:show, :update, :destroy] do
     @blob ||= if blob_id_param
       Blob.find(blob_id_param)
     elsif @container && filename_param
