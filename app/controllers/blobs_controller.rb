@@ -77,7 +77,7 @@ class BlobsController < ApplicationController
   end
 
   def update
-    if payload_io
+    if params[:payload]
       @blob.upload_and_update!(io: payload_io, **blob_params)
     else
       @blob.update(**blob_params)
