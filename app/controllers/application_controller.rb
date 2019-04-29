@@ -96,7 +96,7 @@ class ApplicationController < ActionController::Base
 
   def admin_request
     if current_user.global_admin?
-      params['admin_request'] || false
+      params['admin'] || false
     else
       false
     end

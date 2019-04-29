@@ -53,7 +53,7 @@ class BlobsController < ApplicationController
     end
   end
 
-  before_action only: [:show, :update, :destroy] do
+  before_action only: [:show, :update, :destroy, :download] do
     @blob ||= if blob_id_param
       Blob.find(blob_id_param)
     elsif @container && filename_param
@@ -77,7 +77,7 @@ class BlobsController < ApplicationController
   end
 
   def update
-    if payload_io
+    if params[:payload]
       @blob.upload_and_update!(io: payload_io, **blob_params)
     else
       @blob.update(**blob_params)
