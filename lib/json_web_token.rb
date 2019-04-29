@@ -10,16 +10,13 @@
 # http://zacstewart.com/2015/05/14/using-json-web-tokens-to-authenticate-javascript-front-ends-on-rails.html
 #
 require 'jwt'
+require 'errors'
 
 class JsonWebToken
   Token = Struct.new(:token) do
     def initialize(*a)
       super
       data
-    end
-
-    def error?
-      @error
     end
 
     def email
@@ -35,8 +32,7 @@ class JsonWebToken
     def data
       @data ||= JsonWebToken.decode(token).deep_symbolize_keys
     rescue
-      @error ||= true
-      @data ||= {}
+      raise BadTokenError
     end
   end
 
