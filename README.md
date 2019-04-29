@@ -30,6 +30,8 @@ This app uses figaro to configure certain components. The following needs to be
 set in the environment or via a figaro config file:
 
 ```
+> vim config/application.yml
+
 default_bucket:         # The S3 bucket the files are stored in
 default_region:         # The S3 region to use
 json_web_token_secret:  # The secret key for checking token signatures
@@ -45,6 +47,19 @@ your credentials must be sent with every request. This makes using the
 
 The easiest work around is the set your `flight_sso` token as a cookie. This
 way it will automatically be sent with each request.
+
+# Manually creating a user token
+
+Tokens to access the server are typically generated using `flight-sso` or
+`flight-account`. If these services are not available, tokens can be manually
+generated through the rails console:
+
+```
+> rails console
+> user = User.find_by_email(<YOUR-EMAIL-ADDRESS>)
+> JsonWebToken::Builder.new(user).build
+=> ... # Returns an SSO token that is valid for 24 hrs
+```
 
 # License
 Eclipse Public License 2.0, see LICENSE.txt for details.

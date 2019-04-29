@@ -48,3 +48,11 @@ class MissingBlobError < MissingError
     ERROR
   end
 end
+
+class BadTokenError < ApplicationError
+  MESSAGE = 'Your token is either invalid or expired'
+
+  def initialize(msg = MESSAGE)
+    super
+  end
+end
