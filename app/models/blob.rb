@@ -45,7 +45,7 @@ class Blob < ApplicationRecord
 
   belongs_to :container
   belongs_to :active_storage_blob, class_name: 'ActiveStorage::Blob', optional: true
-  delegate_missing_to :active_storage_blob_or_error
+  delegate_missing_to :active_storage_blob
 
   validates :filename, uniqueness: { scope: :container }
   validates :label, format: {
@@ -74,10 +74,6 @@ class Blob < ApplicationRecord
       new_as.purge
       raise e
     end
-  end
-
-  def active_storage_blob_or_error
-    active_storage_blob || MissingActiveStorageBlob.raise(self)
   end
 
   def protected
