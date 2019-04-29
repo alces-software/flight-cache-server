@@ -30,6 +30,8 @@ This app uses figaro to configure certain components. The following needs to be
 set in the environment or via a figaro config file:
 
 ```
+> vim config/application.yml
+
 default_bucket:         # The S3 bucket the files are stored in
 default_region:         # The S3 region to use
 json_web_token_secret:  # The secret key for checking token signatures
