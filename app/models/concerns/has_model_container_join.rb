@@ -21,37 +21,16 @@
 #
 #  https://opensource.org/licenses/EPL-2.0
 #
-# For more information on flight-account, please visit:
+# For more information on flight-cache-server, please visit:
 # https://github.com/alces-software/flight-cache-server
 #===============================================================================
 
-require 'scope_parser'
-require 'errors'
 require 'container_join'
 
-class User < ApplicationRecord
-  include HasModelContainerJoin
+module HasModelContainerJoin
+  extend ActiveSupport::Concern
 
-  belongs_to :default_group, optional: true, class_name: 'Group'
-  has_many   :containers
-
-  def default_group!
-    return default_group if default_group
-    raise GroupMissing, 'The user does not have a default group'
-  end
-
-  def upload_limit
-    super() || Figaro.env.user_upload_limit.to_i
-  end
-
-  def used_limit
-    joins.owns(admin: false)
-         .blobs
-         .map(&:byte_size)
-         .reduce(0, :+)
-  end
-
-  def remaining_limit
-    upload_limit - used_limit
+  def joins
+    ContainerJoin.new(self)
   end
 end

@@ -28,7 +28,7 @@
 require 'container_join'
 
 class ContainersController < ApplicationController
-  include ContainerJoin::ControllerMixin
+  include HasControllerContainerJoin
 
   before_action(only: :index) do
     @containers ||= resolve_container_join.containers
