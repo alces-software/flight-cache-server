@@ -21,32 +21,67 @@
 #
 #  https://opensource.org/licenses/EPL-2.0
 #
-# For more information on flight-account, please visit:
+# For more information on flight-cache-server, please visit:
 # https://github.com/alces-software/flight-cache-server
 #===============================================================================
 
 require 'active_storage/blob'
+require 'base64'
+require 'stringio'
+require 'container_join'
+require 'errors'
 
 class BlobsController < ApplicationController
-  # Allow indexing blobs against a container or scope
-  load_and_authorize_resource :container, only: :index
+  include ContainerJoin::ControllerMixin
+
+  load_resource :container
+  load_container_from_tag_scope_and_admin
+  authorize_resource :container
+
   before_action only: :index do
-    @blobs ||= if @container
-                 @container.blobs
-               elsif current_scope
-                 current_scope.owns.blobs
-               else
-                 current_user.blobs
-               end
+    @blobs ||= begin
+      rel = if @container
+        ContainerRelationship.new([@container])
+      else
+        resolve_container_join
+      end
+      if label_param
+        rel.labeled_blobs(label_param, wild: wild_param)
+      else
+        rel.blobs
+      end
+    end
   end
 
-  load_and_authorize_resource :blob
+  before_action only: [:show, :update, :destroy, :download] do
+    @blob ||= if blob_id_param
+      Blob.find(blob_id_param)
+    elsif @container && filename_param
+      b = Blob.find_by(filename: filename_param, container: @container)
+      b || MissingBlobError.raise(@container, filename_param)
+    end
+  end
+  authorize_resource :blob
 
   def index
     render json: BlobSerializer.new(@blobs, is_collection: true)
   end
 
   def show
+    render json: BlobSerializer.new(@blob)
+  end
+
+  def create
+    b = Blob.upload_and_create!(io: payload_io, container: @container, **blob_params)
+    render json: BlobSerializer.new(b)
+  end
+
+  def update
+    if params[:payload]
+      @blob.upload_and_update!(io: payload_io, **blob_params)
+    else
+      @blob.update(**blob_params)
+    end
     render json: BlobSerializer.new(@blob)
   end
 
@@ -60,5 +95,31 @@ class BlobsController < ApplicationController
     else
       render json: { "error" => @blob.errors.as_json }, status: 400
     end
+  end
+
+  private
+
+  def blob_id_param
+    params[:id]
+  end
+
+  def filename_param
+    params[:filename]
+  end
+
+  def blob_params
+    params.permit([:filename, :title, :label]).to_h.symbolize_keys
+  end
+
+  def payload_io
+    params.require(:payload).to_io
+  end
+
+  def label_param
+    params[:label]
+  end
+
+  def wild_param
+    params[:wild]
   end
 end

@@ -40,3 +40,19 @@ class MissingTagError < MissingError
     ERROR
   end
 end
+
+class MissingBlobError < MissingError
+  def self.raise(container, filename)
+    Kernel.raise self, <<~ERROR.squish
+      Could not locate file '#{filename}' in container '#{container.id}'
+    ERROR
+  end
+end
+
+class MissingActiveStorageBlob < MissingError
+  def self.raise(blob)
+    Kernel.raise self, <<~ERROR
+      File '#{blob.id}' is not associated with an uploaded file
+    ERROR
+  end
+end

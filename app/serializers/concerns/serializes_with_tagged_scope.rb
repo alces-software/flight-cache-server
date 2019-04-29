@@ -31,6 +31,7 @@ module SerializesWithTaggedScope
   included do
     attribute(:tag_name) { |o| o.container.tag.name }
     attribute(:scope) { |o| o.container.scope }
+    attribute(:admin) { |o| o.container.admin }
 
     tag_kwargs = {
       links: { related: proc { |o| urls.tag_url(o.container.tag) } }

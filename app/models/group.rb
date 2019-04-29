@@ -25,8 +25,10 @@
 # https://github.com/alces-software/flight-cache-server
 #===============================================================================
 
+require 'container_join'
+
 class Group < ApplicationRecord
-  include HasContainerOwnership.new(:containers)
+  include ContainerJoin::Mixin
 
   has_many :containers
   has_many :users, foreign_key: 'default_group_id'

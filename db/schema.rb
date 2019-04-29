@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_12_142656) do
+ActiveRecord::Schema.define(version: 2019_04_17_112205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,13 +37,14 @@ ActiveRecord::Schema.define(version: 2019_04_12_142656) do
   end
 
   create_table "blobs", force: :cascade do |t|
-    t.serial "active_storage_blob_id", null: false
+    t.bigint "active_storage_blob_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "container_id", null: false
     t.boolean "protected", default: false
     t.string "title"
     t.string "filename", null: false
+    t.string "label", default: "", null: false
     t.index ["active_storage_blob_id"], name: "index_blobs_on_active_storage_blob_id", unique: true
     t.index ["container_id"], name: "index_blobs_on_container_id"
     t.index ["filename", "container_id"], name: "index_blobs_on_filename_and_container_id", unique: true
@@ -55,9 +56,10 @@ ActiveRecord::Schema.define(version: 2019_04_12_142656) do
     t.bigint "tag_id"
     t.bigint "group_id"
     t.bigint "user_id"
+    t.boolean "admin", default: false
     t.index ["group_id"], name: "index_containers_on_group_id"
-    t.index ["tag_id", "group_id"], name: "index_containers_on_tag_id_and_group_id", unique: true
-    t.index ["tag_id", "user_id"], name: "index_containers_on_tag_id_and_user_id", unique: true
+    t.index ["tag_id", "group_id", "admin"], name: "index_containers_on_tag_id_and_group_id_and_admin", unique: true
+    t.index ["tag_id", "user_id", "admin"], name: "index_containers_on_tag_id_and_user_id_and_admin", unique: true
     t.index ["tag_id"], name: "index_containers_on_tag_id"
     t.index ["user_id"], name: "index_containers_on_user_id"
   end

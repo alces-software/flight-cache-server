@@ -26,23 +26,59 @@
 #===============================================================================
 
 require 'quotas'
+require 'errors'
 
 class Blob < ApplicationRecord
-  def self.upload_and_create!(io:, filename:, container:)
-    Quotas.new(io, container).enforce_all
-    transaction do
-      as = ActiveStorage::Blob.create_after_upload!(io: io, filename: filename)
-      create!(active_storage_blob: as, container: container, filename: filename)
+  def self.upload_and_create!(io:, **kwargs)
+    Quotas.new(io, kwargs[:container]).enforce_all
+    blob, as = transaction do
+      b = create!(**kwargs)
+      a = ActiveStorage::Blob.create_after_upload!(io: io, filename: as_blob_filename)
+      [b, a]
     end
+    blob.tap { |b| b.update!(active_storage_blob: as) }
+  end
+
+  def self.as_blob_filename
+    "flight-cache-blob-#{Time.now.rfc3339}"
   end
 
   belongs_to :container
-  belongs_to :active_storage_blob, class_name: 'ActiveStorage::Blob'
-  delegate_missing_to :active_storage_blob
+  belongs_to :active_storage_blob, class_name: 'ActiveStorage::Blob', optional: true
+  delegate_missing_to :active_storage_blob_or_error
+
+  validates :filename, uniqueness: { scope: :container }
+  validates :label, format: {
+    with: /\A([[:alnum:]]+(\/[[:alnum:]]+)*)?\Z/,
+    message: <<~MSG.squish
+      must be empty or an alphanumeric string delimited by '/' characters
+    MSG
+  }
 
   alias_attribute :protected?, :protected
 
   after_destroy :purge_active_storage_blob
+
+  def upload_and_update!(io:, **kwargs)
+    Quotas.new(io, container, active_storage_blob&.byte_size).enforce_all
+    new_as = ActiveStorage::Blob.create_after_upload!(
+      io: io, filename: self.class.as_blob_filename
+    )
+    begin
+      transaction do
+        old_as = active_storage_blob
+        self.update!(**kwargs, active_storage_blob: new_as)
+        old_as&.purge
+      end
+    rescue => e
+      new_as.purge
+      raise e
+    end
+  end
+
+  def active_storage_blob_or_error
+    active_storage_blob || MissingActiveStorageBlob.raise(self)
+  end
 
   def protected
     super() || container.restricted?
@@ -60,7 +96,7 @@ class Blob < ApplicationRecord
   private
 
   def purge_active_storage_blob
-    active_storage_blob.purge
+    active_storage_blob&.purge
   end
 
   def access?(method, other)
