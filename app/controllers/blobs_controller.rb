@@ -32,7 +32,7 @@ require 'container_join'
 require 'errors'
 
 class BlobsController < ApplicationController
-  include ContainerJoin::ControllerMixin
+  include HasControllerContainerJoin
 
   load_resource :container
   load_container_from_tag_scope_and_admin

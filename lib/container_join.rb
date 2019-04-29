@@ -49,36 +49,6 @@ ContainerRelationship = Struct.new(:containers) do
 end
 
 ContainerJoin = Struct.new(:entity) do
-  module Mixin
-    def joins
-      ContainerJoin.new(self)
-    end
-  end
-
-  module ControllerMixin
-    extend ActiveSupport::Concern
-
-    def resolve_container_join
-      ContainerJoin.resolve(
-        owner: current_scope_or_user,
-        all: current_scope.nil?,
-        tag: current_tag,
-        admin: admin_request
-      )
-    end
-
-    class_methods do
-      def load_container_from_tag_scope_and_admin(**kwargs)
-        before_action(**kwargs) do
-          next unless (current_scope && current_tag && !admin_request.nil?)
-          @container ||= ContainerJoin.new(current_scope)
-                                      .owns_container(current_tag,
-                                                      admin: admin_request)
-        end
-      end
-    end
-  end
-
   def self.global
     new(Group.find_or_create_by!(name: 'global'))
   end

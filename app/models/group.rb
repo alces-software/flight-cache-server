@@ -28,7 +28,7 @@
 require 'container_join'
 
 class Group < ApplicationRecord
-  include ContainerJoin::Mixin
+  include HasModelContainerJoin
 
   has_many :containers
   has_many :users, foreign_key: 'default_group_id'
